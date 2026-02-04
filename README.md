@@ -1,0 +1,22 @@
+# Driver Theory Quiz (Android)
+
+This project is structured for maintainability and feature growth:
+
+- `data/local`: Room database, entities, DAO, and relationship models.
+- `data/repository`: Repository abstraction and implementation.
+- `data/seed`: Local sample quiz seed data.
+- `domain/model`: App-facing quiz models.
+- `ui/quiz`: Quiz UI, state model, and ViewModel.
+
+## Current features
+
+- One local multiple-choice quiz.
+- Questions with four options each.
+- Local Room persistence and startup seed pipeline.
+- Quiz flow with score calculation and restart.
+
+## Extend later
+
+- Add more quizzes by inserting additional `QuizEntity`, `QuestionEntity`, and `AnswerOptionEntity` rows.
+- Add user progress/history tables (attempts, scores, bookmarks).
+- Add category filtering and timed tests using new repository APIs and ViewModels.
