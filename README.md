@@ -12,6 +12,12 @@ This project is structured for maintainability and feature growth:
 
 - One local multiple-choice quiz.
 - Questions with four options each.
+- Fixed question categories:
+  - `Control of Vehicle`
+  - `Legal Matters/Rules of the Road`
+  - `Managing Risk`
+  - `Safe and Social Responsible Driving`
+  - `Technical Matters`
 - Local Room persistence and startup seed pipeline.
 - Quiz flow with score calculation and restart.
 

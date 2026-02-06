@@ -36,6 +36,7 @@ private fun QuizWithQuestions.toDomainModel(): Quiz {
             Question(
                 id = questionWithOptions.question.id,
                 prompt = questionWithOptions.question.prompt,
+                category = questionWithOptions.question.category,
                 options = orderedOptions.map { option ->
                     AnswerOption(
                         id = option.id,

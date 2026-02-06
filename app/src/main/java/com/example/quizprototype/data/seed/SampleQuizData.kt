@@ -3,6 +3,7 @@ package com.example.quizprototype.data.seed
 import com.example.quizprototype.data.local.entity.AnswerOptionEntity
 import com.example.quizprototype.data.local.entity.QuestionEntity
 import com.example.quizprototype.data.local.entity.QuizEntity
+import com.example.quizprototype.domain.model.QuestionCategory
 
 object SampleQuizData {
     private const val QUIZ_ID = 1
@@ -18,30 +19,35 @@ object SampleQuizData {
             id = 101,
             quizId = QUIZ_ID,
             prompt = "What should you do when approaching a yellow box junction that is occupied?",
+            category = QuestionCategory.LEGAL_MATTERS_RULES_OF_THE_ROAD,
             orderIndex = 0
         ),
         QuestionEntity(
             id = 102,
             quizId = QUIZ_ID,
             prompt = "What is the safest way to use a mobile phone while driving?",
+            category = QuestionCategory.SAFE_AND_SOCIAL_RESPONSIBLE_DRIVING,
             orderIndex = 1
         ),
         QuestionEntity(
             id = 103,
             quizId = QUIZ_ID,
             prompt = "What should you do before changing lanes on a dual carriageway?",
+            category = QuestionCategory.MANAGING_RISK,
             orderIndex = 2
         ),
         QuestionEntity(
             id = 104,
             quizId = QUIZ_ID,
             prompt = "When can you overtake on the left in slow moving traffic?",
+            category = QuestionCategory.LEGAL_MATTERS_RULES_OF_THE_ROAD,
             orderIndex = 3
         ),
         QuestionEntity(
             id = 105,
             quizId = QUIZ_ID,
             prompt = "What does a continuous white line along the center of the road mean?",
+            category = QuestionCategory.CONTROL_OF_VEHICLE,
             orderIndex = 4
         )
     )

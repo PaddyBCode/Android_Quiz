@@ -10,6 +10,7 @@ data class Quiz(
 data class Question(
     val id: Int,
     val prompt: String,
+    val category: QuestionCategory,
     val options: List<AnswerOption>,
     val correctOptionId: Int
 )

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.quizprototype.data.local.dao.QuizDao
 import com.example.quizprototype.data.local.entity.AnswerOptionEntity
 import com.example.quizprototype.data.local.entity.QuestionEntity
@@ -14,6 +15,7 @@ import com.example.quizprototype.data.local.entity.QuizEntity
     version = 1,
     exportSchema = true
 )
+@TypeConverters(QuestionCategoryConverter::class)
 abstract class QuizDatabase : RoomDatabase() {
     abstract fun quizDao(): QuizDao
 

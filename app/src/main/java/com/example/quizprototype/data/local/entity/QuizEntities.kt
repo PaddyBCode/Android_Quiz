@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.quizprototype.domain.model.QuestionCategory
 
 @Entity(tableName = "quizzes")
 data class QuizEntity(
@@ -22,12 +23,13 @@ data class QuizEntity(
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("quizId")]
+    indices = [Index("quizId"), Index("category")]
 )
 data class QuestionEntity(
     @PrimaryKey val id: Int,
     val quizId: Int,
     val prompt: String,
+    val category: QuestionCategory,
     val orderIndex: Int
 )
 
