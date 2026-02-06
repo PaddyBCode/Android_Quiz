@@ -10,6 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,21 +23,24 @@ fun QuizScreen(
     uiState: QuizUiState,
     onOptionSelected: (Int) -> Unit,
     onNextQuestion: () -> Unit,
-    onRestartQuiz: () -> Unit
+    onRestartQuiz: () -> Unit,
+    onBackToMenu: () -> Unit
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         when {
             uiState.isLoading -> {
                 CenteredMessage(
                     modifier = Modifier.padding(innerPadding),
-                    message = "Loading quiz..."
+                    message = "Loading quiz...",
+                    onBackToMenu = onBackToMenu
                 )
             }
 
             uiState.errorMessage != null -> {
                 CenteredMessage(
                     modifier = Modifier.padding(innerPadding),
-                    message = uiState.errorMessage
+                    message = uiState.errorMessage,
+                    onBackToMenu = onBackToMenu
                 )
             }
 
@@ -45,7 +49,8 @@ fun QuizScreen(
                     modifier = Modifier.padding(innerPadding),
                     score = uiState.score,
                     totalQuestions = uiState.totalQuestions,
-                    onRestartQuiz = onRestartQuiz
+                    onRestartQuiz = onRestartQuiz,
+                    onBackToMenu = onBackToMenu
                 )
             }
 
@@ -54,7 +59,8 @@ fun QuizScreen(
                     modifier = Modifier.padding(innerPadding),
                     uiState = uiState,
                     onOptionSelected = onOptionSelected,
-                    onNextQuestion = onNextQuestion
+                    onNextQuestion = onNextQuestion,
+                    onBackToMenu = onBackToMenu
                 )
             }
         }
@@ -66,7 +72,8 @@ private fun QuizQuestionContent(
     modifier: Modifier,
     uiState: QuizUiState,
     onOptionSelected: (Int) -> Unit,
-    onNextQuestion: () -> Unit
+    onNextQuestion: () -> Unit,
+    onBackToMenu: () -> Unit
 ) {
     val question = uiState.currentQuestion ?: return
     val progress = (uiState.questionIndex + 1).toFloat() / uiState.totalQuestions
@@ -78,6 +85,9 @@ private fun QuizQuestionContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        OutlinedButton(onClick = onBackToMenu) {
+            Text("Back to Menu")
+        }
         Text(
             text = uiState.title,
             style = MaterialTheme.typography.headlineSmall
@@ -138,7 +148,8 @@ private fun QuizCompleted(
     modifier: Modifier,
     score: Int,
     totalQuestions: Int,
-    onRestartQuiz: () -> Unit
+    onRestartQuiz: () -> Unit,
+    onBackToMenu: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -157,13 +168,17 @@ private fun QuizCompleted(
         Button(onClick = onRestartQuiz) {
             Text("Try Again")
         }
+        OutlinedButton(onClick = onBackToMenu) {
+            Text("Back to Menu")
+        }
     }
 }
 
 @Composable
 private fun CenteredMessage(
     modifier: Modifier,
-    message: String
+    message: String,
+    onBackToMenu: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -175,5 +190,8 @@ private fun CenteredMessage(
             text = message,
             style = MaterialTheme.typography.titleMedium
         )
+        OutlinedButton(onClick = onBackToMenu) {
+            Text("Back to Menu")
+        }
     }
 }
