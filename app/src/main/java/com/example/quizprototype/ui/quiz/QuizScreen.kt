@@ -105,11 +105,17 @@ private fun QuizQuestionContent(
             style = MaterialTheme.typography.labelLarge
         )
         Card(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = question.prompt,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(16.dp)
-            )
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = question.prompt,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "Category: ${question.category.displayName}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
         question.options.forEach { option ->

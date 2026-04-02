@@ -11,6 +11,8 @@ This project is structured for maintainability and feature growth:
 ## Current features
 
 - One local multiple-choice quiz.
+- Quick Quiz mode serves 5 random questions from all categories.
+- 25 sample questions (5 per category).
 - Questions with four options each.
 - Fixed question categories:
   - `Control of Vehicle`

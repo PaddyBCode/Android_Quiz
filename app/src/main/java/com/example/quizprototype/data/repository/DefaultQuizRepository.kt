@@ -12,9 +12,20 @@ class DefaultQuizRepository(
 ) : QuizRepository {
 
     override suspend fun seedIfNeeded() {
-        if (quizDao.getFirstQuizId() != null) return
+        val existingQuizId = quizDao.getFirstQuizId()
+        if (existingQuizId == null) {
+            quizDao.seedQuiz(
+                quiz = SampleQuizData.quiz,
+                questions = SampleQuizData.questions,
+                options = SampleQuizData.options
+            )
+            return
+        }
 
-        quizDao.seedQuiz(
+        val existingQuestionCount = quizDao.getQuestionCountForQuiz(existingQuizId)
+        if (existingQuestionCount >= SampleQuizData.questions.size) return
+
+        quizDao.replaceSeedQuiz(
             quiz = SampleQuizData.quiz,
             questions = SampleQuizData.questions,
             options = SampleQuizData.options

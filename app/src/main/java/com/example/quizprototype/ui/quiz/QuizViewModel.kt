@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.quizprototype.data.repository.QuizRepository
+import com.example.quizprototype.domain.model.Question
 import com.example.quizprototype.domain.model.Quiz
 import kotlinx.coroutines.launch
 
@@ -17,6 +18,7 @@ class QuizViewModel(
     var uiState by mutableStateOf(QuizUiState())
         private set
 
+    private var quickQuizQuestions: List<Question> = emptyList()
     private var loadedQuiz: Quiz? = null
     private val selectedAnswersByQuestionId = mutableMapOf<Int, Int>()
 
@@ -29,17 +31,18 @@ class QuizViewModel(
     }
 
     fun onNextQuestion() {
-        val quiz = loadedQuiz ?: return
+        val questions = quickQuizQuestions
+        if (questions.isEmpty()) return
         val currentQuestion = uiState.currentQuestion ?: return
         val selectedOptionId = uiState.selectedOptionId ?: return
 
         selectedAnswersByQuestionId[currentQuestion.id] = selectedOptionId
 
         val nextIndex = uiState.questionIndex + 1
-        val isLastQuestion = nextIndex >= quiz.questions.size
+        val isLastQuestion = nextIndex >= questions.size
 
         if (isLastQuestion) {
-            val finalScore = quiz.questions.count { question ->
+            val finalScore = questions.count { question ->
                 selectedAnswersByQuestionId[question.id] == question.correctOptionId
             }
             uiState = uiState.copy(
@@ -50,7 +53,7 @@ class QuizViewModel(
             return
         }
 
-        val nextQuestion = quiz.questions[nextIndex]
+        val nextQuestion = questions[nextIndex]
         uiState = uiState.copy(
             questionIndex = nextIndex,
             currentQuestion = nextQuestion,
@@ -60,15 +63,7 @@ class QuizViewModel(
 
     fun onRestartQuiz() {
         val quiz = loadedQuiz ?: return
-        selectedAnswersByQuestionId.clear()
-        uiState = uiState.copy(
-            questionIndex = 0,
-            currentQuestion = quiz.questions.firstOrNull(),
-            selectedOptionId = null,
-            score = 0,
-            isQuizCompleted = false,
-            errorMessage = null
-        )
+        startQuickQuizSession(quiz)
     }
 
     private fun loadQuiz() {
@@ -86,24 +81,44 @@ class QuizViewModel(
                 }
 
                 loadedQuiz = quiz
+                startQuickQuizSession(quiz)
+            }.onFailure { throwable ->
+                val reason = throwable.message?.takeIf { it.isNotBlank() } ?: "Unknown error"
                 uiState = QuizUiState(
                     isLoading = false,
-                    title = quiz.title,
-                    description = quiz.description,
-                    currentQuestion = quiz.questions.first(),
-                    questionIndex = 0,
-                    totalQuestions = quiz.questions.size
-                )
-            }.onFailure {
-                uiState = QuizUiState(
-                    isLoading = false,
-                    errorMessage = "Failed to load quiz data."
+                    errorMessage = "Failed to load quiz data: $reason"
                 )
             }
         }
     }
 
+    private fun startQuickQuizSession(quiz: Quiz) {
+        quickQuizQuestions = quiz.questions
+            .shuffled()
+            .take(minOf(QUICK_QUIZ_QUESTION_COUNT, quiz.questions.size))
+
+        if (quickQuizQuestions.isEmpty()) {
+            uiState = QuizUiState(
+                isLoading = false,
+                errorMessage = "No quick quiz questions available."
+            )
+            return
+        }
+
+        selectedAnswersByQuestionId.clear()
+        uiState = QuizUiState(
+            isLoading = false,
+            title = "Quick Quiz",
+            description = "5 random questions from all categories.",
+            currentQuestion = quickQuizQuestions.first(),
+            questionIndex = 0,
+            totalQuestions = quickQuizQuestions.size
+        )
+    }
+
     companion object {
+        private const val QUICK_QUIZ_QUESTION_COUNT = 5
+
         fun provideFactory(repository: QuizRepository): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {

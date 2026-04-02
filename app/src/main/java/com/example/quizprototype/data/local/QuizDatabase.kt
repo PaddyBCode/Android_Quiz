@@ -20,18 +20,37 @@ abstract class QuizDatabase : RoomDatabase() {
     abstract fun quizDao(): QuizDao
 
     companion object {
+        private const val DATABASE_NAME = "quiz_database"
+
         @Volatile
         private var Instance: QuizDatabase? = null
 
         fun getDatabase(context: Context): QuizDatabase {
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(
-                    context.applicationContext,
-                    QuizDatabase::class.java,
-                    "quiz_database"
-                )
-                    .build()
+                Instance ?: buildDatabaseWithPrototypeReset(context.applicationContext)
                     .also { Instance = it }
+            }
+        }
+
+        private fun buildDatabase(context: Context): QuizDatabase {
+            return Room.databaseBuilder(
+                context,
+                QuizDatabase::class.java,
+                DATABASE_NAME
+            ).build()
+        }
+
+        private fun buildDatabaseWithPrototypeReset(context: Context): QuizDatabase {
+            var candidate: QuizDatabase? = null
+            return runCatching {
+                candidate = buildDatabase(context)
+                // Force open now so schema issues are handled once during startup.
+                candidate?.openHelper?.writableDatabase
+                candidate!!
+            }.getOrElse {
+                candidate?.close()
+                context.deleteDatabase(DATABASE_NAME)
+                buildDatabase(context)
             }
         }
     }
