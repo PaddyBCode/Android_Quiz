@@ -1,6 +1,7 @@
 package com.example.quizprototype.ui.navigation
 
 object AppDestinations {
+    const val ONBOARDING = "onboarding"
     const val HOME = "home"
     const val STUDY_PICKER = "study_picker"
     const val SESSION = "session"

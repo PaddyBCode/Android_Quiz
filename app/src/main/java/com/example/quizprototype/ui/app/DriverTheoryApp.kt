@@ -30,6 +30,9 @@ import com.example.quizprototype.ui.home.HomeEvent
 import com.example.quizprototype.ui.home.HomeScreen
 import com.example.quizprototype.ui.home.HomeViewModel
 import com.example.quizprototype.ui.navigation.AppDestinations
+import com.example.quizprototype.ui.onboarding.OnboardingEvent
+import com.example.quizprototype.ui.onboarding.OnboardingScreen
+import com.example.quizprototype.ui.onboarding.OnboardingViewModel
 import com.example.quizprototype.ui.progress.ProgressScreen
 import com.example.quizprototype.ui.progress.ProgressViewModel
 import com.example.quizprototype.ui.results.ResultsScreen
@@ -45,7 +48,10 @@ import com.example.quizprototype.ui.study.StudyModePickerViewModel
 @Composable
 fun DriverTheoryApp(appContainer: AppContainer) {
     val appStateViewModel: AppStateViewModel = viewModel(
-        factory = AppStateViewModel.provideFactory(appContainer.contentImportRepository)
+        factory = AppStateViewModel.provideFactory(
+            contentImportRepository = appContainer.contentImportRepository,
+            userProfileRepository = appContainer.userProfileRepository
+        )
     )
     val appState by appStateViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -67,24 +73,56 @@ fun DriverTheoryApp(appContainer: AppContainer) {
         }
 
         else -> {
-            DriverTheoryNavGraph(appContainer = appContainer)
+            DriverTheoryNavGraph(
+                appContainer = appContainer,
+                hasUserProfile = appState.userProfile != null
+            )
         }
     }
 }
 
 @Composable
-private fun DriverTheoryNavGraph(appContainer: AppContainer) {
+private fun DriverTheoryNavGraph(
+    appContainer: AppContainer,
+    hasUserProfile: Boolean
+) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = AppDestinations.HOME
+        startDestination = if (hasUserProfile) AppDestinations.HOME else AppDestinations.ONBOARDING
     ) {
+        composable(AppDestinations.ONBOARDING) {
+            val viewModel: OnboardingViewModel = viewModel(
+                factory = OnboardingViewModel.provideFactory(appContainer.userProfileRepository)
+            )
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(viewModel) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        OnboardingEvent.ProfileCreated -> {
+                            navController.navigate(AppDestinations.HOME) {
+                                popUpTo(AppDestinations.ONBOARDING) { inclusive = true }
+                            }
+                        }
+                    }
+                }
+            }
+
+            OnboardingScreen(
+                uiState = uiState,
+                onUsernameChanged = viewModel::onUsernameChanged,
+                onCreateProfile = viewModel::createProfile
+            )
+        }
+
         composable(AppDestinations.HOME) {
             val viewModel: HomeViewModel = viewModel(
                 factory = HomeViewModel.provideFactory(
                     questionBankRepository = appContainer.questionBankRepository,
                     progressRepository = appContainer.progressRepository,
+                    userProfileRepository = appContainer.userProfileRepository,
                     studySessionRepository = appContainer.studySessionRepository
                 )
             )

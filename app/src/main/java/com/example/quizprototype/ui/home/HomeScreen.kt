@@ -38,6 +38,13 @@ fun HomeScreen(
         ) {
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    uiState.userProfile?.let { profile ->
+                        Text(
+                            text = "Welcome ${profile.username}",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     Text(
                         text = "Driver Theory Study",
                         style = MaterialTheme.typography.headlineMedium
@@ -65,6 +72,7 @@ fun HomeScreen(
             if (dashboard != null) {
                 item {
                     DashboardCard(
+                        username = dashboard.let { uiState.userProfile?.username },
                         totalQuestions = dashboard.totalQuestions,
                         readinessPercent = dashboard.readinessPercent,
                         completedSessions = dashboard.completedSessions,
@@ -159,6 +167,7 @@ fun HomeScreen(
 
 @Composable
 private fun DashboardCard(
+    username: String?,
     totalQuestions: Int,
     readinessPercent: Int,
     completedSessions: Int,
@@ -169,7 +178,10 @@ private fun DashboardCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Dashboard", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = if (username.isNullOrBlank()) "Dashboard" else "Dashboard for $username",
+                style = MaterialTheme.typography.titleMedium
+            )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 SummaryMetric("Question bank", totalQuestions.toString())
                 SummaryMetric("Readiness", "$readinessPercent%")

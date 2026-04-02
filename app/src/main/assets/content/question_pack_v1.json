@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "licenceTypes": [
     {
       "id": "CAR",
@@ -329,6 +329,246 @@
             { "id": "q015_b", "text": "Increase top speed" },
             { "id": "q015_c", "text": "Reduce fuel consumption" },
             { "id": "q015_d", "text": "Shorten stopping distance on every surface" }
+          ]
+        },
+        {
+          "id": "q016",
+          "categoryId": "control_of_vehicle",
+          "topicId": "braking_and_stopping",
+          "prompt": "When driving downhill for a long distance, what helps you keep better control?",
+          "explanation": "Selecting a lower gear uses engine braking and reduces the need to overuse the foot brake.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q016_b",
+          "options": [
+            { "id": "q016_a", "text": "Stay in a high gear and brake hard" },
+            { "id": "q016_b", "text": "Select a lower gear to use engine braking" },
+            { "id": "q016_c", "text": "Shift to neutral to roll freely" },
+            { "id": "q016_d", "text": "Use the handbrake lightly while moving" }
+          ]
+        },
+        {
+          "id": "q017",
+          "categoryId": "control_of_vehicle",
+          "topicId": "steering_control",
+          "prompt": "If your car begins to skid, what should you do first?",
+          "explanation": "Easing off the accelerator and steering gently into the skid helps the tyres regain grip.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q017_c",
+          "options": [
+            { "id": "q017_a", "text": "Brake as hard as possible" },
+            { "id": "q017_b", "text": "Accelerate sharply" },
+            { "id": "q017_c", "text": "Ease off the accelerator and steer gently into the skid" },
+            { "id": "q017_d", "text": "Pull the handbrake immediately" }
+          ]
+        },
+        {
+          "id": "q018",
+          "categoryId": "control_of_vehicle",
+          "topicId": "braking_and_stopping",
+          "prompt": "What is the safest way to bring your car to a stop on a wet road?",
+          "explanation": "Wet roads reduce grip, so smooth progressive braking gives the tyres more chance to hold the road.",
+          "sourceReference": "Road safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q018_d",
+          "options": [
+            { "id": "q018_a", "text": "Brake late to keep traffic flowing" },
+            { "id": "q018_b", "text": "Pump the pedal quickly" },
+            { "id": "q018_c", "text": "Use the handbrake before the foot brake" },
+            { "id": "q018_d", "text": "Brake early and progressively" }
+          ]
+        },
+        {
+          "id": "q019",
+          "categoryId": "rules_of_road",
+          "topicId": "road_markings",
+          "prompt": "A circular sign with a red border and the number 50 usually means:",
+          "explanation": "A circular sign with a red border shows a mandatory limit or prohibition. With a number, it is a speed limit.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q019_c",
+          "options": [
+            { "id": "q019_a", "text": "A recommended speed of 50 km/h" },
+            { "id": "q019_b", "text": "A minimum speed of 50 km/h" },
+            { "id": "q019_c", "text": "A speed limit of 50 km/h" },
+            { "id": "q019_d", "text": "Road number 50" }
+          ]
+        },
+        {
+          "id": "q020",
+          "categoryId": "rules_of_road",
+          "topicId": "junction_rules",
+          "prompt": "When is overtaking on the left allowed in slow-moving traffic?",
+          "explanation": "In slow-moving traffic, vehicles in a lane may pass those in another lane on the left if traffic in that lane is moving more quickly.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q020_b",
+          "options": [
+            { "id": "q020_a", "text": "Whenever you are in a hurry" },
+            { "id": "q020_b", "text": "When traffic in your lane is moving faster" },
+            { "id": "q020_c", "text": "Only on the hard shoulder" },
+            { "id": "q020_d", "text": "Never under any circumstances" }
+          ]
+        },
+        {
+          "id": "q021",
+          "categoryId": "rules_of_road",
+          "topicId": "road_markings",
+          "prompt": "What should you do if a lane arrow shows that your lane must turn left?",
+          "explanation": "Lane arrows give advance instruction. You should follow the lane direction shown unless road signs or markings indicate otherwise.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q021_a",
+          "options": [
+            { "id": "q021_a", "text": "Follow the lane and turn left" },
+            { "id": "q021_b", "text": "Continue straight if traffic is light" },
+            { "id": "q021_c", "text": "Stop in the lane until it clears" },
+            { "id": "q021_d", "text": "Ignore it if your indicator is on" }
+          ]
+        },
+        {
+          "id": "q022",
+          "categoryId": "managing_risk",
+          "topicId": "observation",
+          "prompt": "Before changing lanes, what is the safest sequence?",
+          "explanation": "Use mirrors and a blind-spot check before moving, and signal in time so other road users understand your intention.",
+          "sourceReference": "Road safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q022_d",
+          "options": [
+            { "id": "q022_a", "text": "Signal and move immediately" },
+            { "id": "q022_b", "text": "Check the centre mirror only" },
+            { "id": "q022_c", "text": "Increase speed and then look" },
+            { "id": "q022_d", "text": "Mirror, signal, blind-spot check, then move if safe" }
+          ]
+        },
+        {
+          "id": "q023",
+          "categoryId": "managing_risk",
+          "topicId": "overtaking",
+          "prompt": "Why should you leave extra space when following a motorcycle?",
+          "explanation": "Motorcycles can be affected more by surface hazards, wind, and sudden changes in balance, so extra space gives you more time to react.",
+          "sourceReference": "Road safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q023_b",
+          "options": [
+            { "id": "q023_a", "text": "They always stop more slowly than cars" },
+            { "id": "q023_b", "text": "They may need to react suddenly to road hazards" },
+            { "id": "q023_c", "text": "They are required to travel more slowly" },
+            { "id": "q023_d", "text": "They cannot use mirrors properly" }
+          ]
+        },
+        {
+          "id": "q024",
+          "categoryId": "managing_risk",
+          "topicId": "observation",
+          "prompt": "At night, when should you dip your headlights?",
+          "explanation": "Dip your headlights when meeting or following other road users so you do not dazzle them.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q024_c",
+          "options": [
+            { "id": "q024_a", "text": "Only in towns" },
+            { "id": "q024_b", "text": "Only when it is raining" },
+            { "id": "q024_c", "text": "When meeting or following other road users" },
+            { "id": "q024_d", "text": "Never on national roads" }
+          ]
+        },
+        {
+          "id": "q025",
+          "categoryId": "safe_responsible_driving",
+          "topicId": "other_road_users",
+          "prompt": "When passing a cyclist, what is best practice?",
+          "explanation": "Leave as much safe space as possible and only overtake when you can do so without squeezing the cyclist.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q025_b",
+          "options": [
+            { "id": "q025_a", "text": "Pass close to stop them wobbling" },
+            { "id": "q025_b", "text": "Leave as much safe space as possible" },
+            { "id": "q025_c", "text": "Use the horn as you pass" },
+            { "id": "q025_d", "text": "Only pass if the cyclist waves you through" }
+          ]
+        },
+        {
+          "id": "q026",
+          "categoryId": "safe_responsible_driving",
+          "topicId": "fitness_to_drive",
+          "prompt": "What is the safest mobile phone policy while driving?",
+          "explanation": "Even hands-free use can distract you. The safest option is to use the phone only when fully stopped in a safe place.",
+          "sourceReference": "Road safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q026_d",
+          "options": [
+            { "id": "q026_a", "text": "Use it briefly at red lights" },
+            { "id": "q026_b", "text": "Use speaker mode in light traffic" },
+            { "id": "q026_c", "text": "Text only on straight roads" },
+            { "id": "q026_d", "text": "Use it only when fully stopped in a safe place" }
+          ]
+        },
+        {
+          "id": "q027",
+          "categoryId": "safe_responsible_driving",
+          "topicId": "other_road_users",
+          "prompt": "Approaching a school crossing, what should you expect?",
+          "explanation": "Children may act unpredictably near schools, so you should reduce speed and be prepared to stop quickly and safely.",
+          "sourceReference": "Road safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q027_a",
+          "options": [
+            { "id": "q027_a", "text": "Children may step out unexpectedly" },
+            { "id": "q027_b", "text": "The crossing will only be used at lunch time" },
+            { "id": "q027_c", "text": "You can maintain speed if no one is on the road" },
+            { "id": "q027_d", "text": "Only cyclists have priority there" }
+          ]
+        },
+        {
+          "id": "q028",
+          "categoryId": "technical_matters",
+          "topicId": "warning_lights",
+          "prompt": "If the engine temperature warning indicates overheating, what should you do?",
+          "explanation": "Overheating can seriously damage the engine. Stop safely and switch off when appropriate before investigating.",
+          "sourceReference": "Vehicle safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q028_b",
+          "options": [
+            { "id": "q028_a", "text": "Keep driving so airflow cools the engine" },
+            { "id": "q028_b", "text": "Stop safely and switch off the engine when appropriate" },
+            { "id": "q028_c", "text": "Pour cold water into the hot engine immediately" },
+            { "id": "q028_d", "text": "Ignore it if the car is still moving" }
+          ]
+        },
+        {
+          "id": "q029",
+          "categoryId": "technical_matters",
+          "topicId": "tyres_and_brakes",
+          "prompt": "Why should tyre tread depth be checked regularly?",
+          "explanation": "Good tread depth helps the tyre maintain grip, especially in wet conditions, and reduces the risk of skidding.",
+          "sourceReference": "Vehicle safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q029_c",
+          "options": [
+            { "id": "q029_a", "text": "To improve stereo performance" },
+            { "id": "q029_b", "text": "To reduce steering wheel size" },
+            { "id": "q029_c", "text": "To maintain grip, especially in wet conditions" },
+            { "id": "q029_d", "text": "To increase engine power" }
+          ]
+        },
+        {
+          "id": "q030",
+          "categoryId": "technical_matters",
+          "topicId": "warning_lights",
+          "prompt": "What should you do if a warning light appears and you are unsure what it means?",
+          "explanation": "Unknown warning lights should never be ignored. Check the vehicle handbook and stop safely if the warning suggests a serious fault.",
+          "sourceReference": "Vehicle safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q030_d",
+          "options": [
+            { "id": "q030_a", "text": "Ignore it until the next service" },
+            { "id": "q030_b", "text": "Drive faster so the engine clears it" },
+            { "id": "q030_c", "text": "Turn the radio off and on" },
+            { "id": "q030_d", "text": "Check the handbook and stop safely if needed" }
           ]
         }
       ]

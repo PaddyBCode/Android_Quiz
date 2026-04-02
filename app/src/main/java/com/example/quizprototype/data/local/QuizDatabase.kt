@@ -9,6 +9,7 @@ import com.example.quizprototype.data.local.dao.BookmarkDao
 import com.example.quizprototype.data.local.dao.ContentDao
 import com.example.quizprototype.data.local.dao.QuestionBankDao
 import com.example.quizprototype.data.local.dao.StudySessionDao
+import com.example.quizprototype.data.local.dao.UserProfileDao
 import com.example.quizprototype.data.local.entity.AnswerOptionEntity
 import com.example.quizprototype.data.local.entity.AnswerRecordEntity
 import com.example.quizprototype.data.local.entity.BookmarkEntity
@@ -18,6 +19,7 @@ import com.example.quizprototype.data.local.entity.QuestionEntity
 import com.example.quizprototype.data.local.entity.StudySessionEntity
 import com.example.quizprototype.data.local.entity.StudySessionQuestionEntity
 import com.example.quizprototype.data.local.entity.TopicEntity
+import com.example.quizprototype.data.local.entity.UserProfileEntity
 
 @Database(
     entities = [
@@ -26,12 +28,13 @@ import com.example.quizprototype.data.local.entity.TopicEntity
         QuestionEntity::class,
         AnswerOptionEntity::class,
         ContentVersionEntity::class,
+        UserProfileEntity::class,
         BookmarkEntity::class,
         StudySessionEntity::class,
         StudySessionQuestionEntity::class,
         AnswerRecordEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(AppTypeConverters::class)
@@ -43,6 +46,8 @@ abstract class QuizDatabase : RoomDatabase() {
     abstract fun bookmarkDao(): BookmarkDao
 
     abstract fun studySessionDao(): StudySessionDao
+
+    abstract fun userProfileDao(): UserProfileDao
 
     companion object {
         private const val DATABASE_NAME = "quiz_database"

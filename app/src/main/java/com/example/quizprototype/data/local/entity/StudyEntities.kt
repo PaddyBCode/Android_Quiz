@@ -95,6 +95,13 @@ data class ContentVersionEntity(
     val questionCount: Int
 )
 
+@Entity(tableName = "user_profiles")
+data class UserProfileEntity(
+    @PrimaryKey val id: Int = 1,
+    val username: String,
+    val createdAtEpochMillis: Long
+)
+
 @Entity(
     tableName = "bookmarks",
     foreignKeys = [

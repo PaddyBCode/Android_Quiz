@@ -11,6 +11,7 @@ import com.example.quizprototype.domain.model.SessionConfig
 import com.example.quizprototype.domain.model.SessionResult
 import com.example.quizprototype.domain.model.SessionSummary
 import com.example.quizprototype.domain.model.Topic
+import com.example.quizprototype.domain.model.UserProfile
 import kotlinx.coroutines.flow.Flow
 
 interface ContentImportRepository {
@@ -54,4 +55,10 @@ interface StudySessionRepository {
 interface ProgressRepository {
     fun observeDashboardSummary(): Flow<DashboardSummary>
     fun observeProgressSnapshot(): Flow<ProgressSnapshot>
+}
+
+interface UserProfileRepository {
+    fun observeUserProfile(): Flow<UserProfile?>
+    suspend fun getUserProfile(): UserProfile?
+    suspend fun createProfile(username: String)
 }

@@ -12,6 +12,12 @@ enum class StudyMode {
     BOOKMARKED
 }
 
+data class UserProfile(
+    val id: Int = 1,
+    val username: String,
+    val createdAtEpochMillis: Long
+)
+
 data class Category(
     val id: String,
     val licenceType: LicenceType,

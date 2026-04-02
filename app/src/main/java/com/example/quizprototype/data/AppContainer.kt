@@ -12,9 +12,11 @@ import com.example.quizprototype.data.repository.DefaultContentImportRepository
 import com.example.quizprototype.data.repository.DefaultProgressRepository
 import com.example.quizprototype.data.repository.DefaultQuestionBankRepository
 import com.example.quizprototype.data.repository.DefaultStudySessionRepository
+import com.example.quizprototype.data.repository.DefaultUserProfileRepository
 import com.example.quizprototype.data.repository.ProgressRepository
 import com.example.quizprototype.data.repository.QuestionBankRepository
 import com.example.quizprototype.data.repository.StudySessionRepository
+import com.example.quizprototype.data.repository.UserProfileRepository
 
 interface AppContainer {
     val analyticsLogger: AnalyticsLogger
@@ -23,6 +25,7 @@ interface AppContainer {
     val bookmarkRepository: BookmarkRepository
     val studySessionRepository: StudySessionRepository
     val progressRepository: ProgressRepository
+    val userProfileRepository: UserProfileRepository
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
@@ -73,6 +76,13 @@ class DefaultAppContainer(context: Context) : AppContainer {
             bookmarkDao = quizDatabase.bookmarkDao(),
             studySessionDao = quizDatabase.studySessionDao(),
             studySessionRepository = studySessionRepository
+        )
+    }
+
+    override val userProfileRepository: UserProfileRepository by lazy {
+        DefaultUserProfileRepository(
+            userProfileDao = quizDatabase.userProfileDao(),
+            analyticsLogger = analyticsLogger
         )
     }
 }
