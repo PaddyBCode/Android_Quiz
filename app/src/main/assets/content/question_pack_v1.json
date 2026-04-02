@@ -1,0 +1,337 @@
+{
+  "version": "1.0.0",
+  "licenceTypes": [
+    {
+      "id": "CAR",
+      "categories": [
+        {
+          "id": "control_of_vehicle",
+          "title": "Control of Vehicle",
+          "description": "Driving technique, braking, steering and moving off safely.",
+          "topics": [
+            {
+              "id": "steering_control",
+              "title": "Steering and Control",
+              "description": "Maintaining smooth control of the car."
+            },
+            {
+              "id": "braking_and_stopping",
+              "title": "Braking and Stopping",
+              "description": "Stopping smoothly and safely."
+            }
+          ]
+        },
+        {
+          "id": "rules_of_road",
+          "title": "Rules of the Road",
+          "description": "Traffic signs, signals and road markings.",
+          "topics": [
+            {
+              "id": "junction_rules",
+              "title": "Junctions and Signals",
+              "description": "Traffic lights and junction behaviour."
+            },
+            {
+              "id": "road_markings",
+              "title": "Road Markings",
+              "description": "Road markings and legal restrictions."
+            }
+          ]
+        },
+        {
+          "id": "managing_risk",
+          "title": "Managing Risk",
+          "description": "Hazard awareness, spacing and overtaking judgement.",
+          "topics": [
+            {
+              "id": "observation",
+              "title": "Observation",
+              "description": "Scanning and anticipation."
+            },
+            {
+              "id": "overtaking",
+              "title": "Overtaking",
+              "description": "Safe overtaking decisions."
+            }
+          ]
+        },
+        {
+          "id": "safe_responsible_driving",
+          "title": "Safe and Responsible Driving",
+          "description": "Sharing the road and driving with care.",
+          "topics": [
+            {
+              "id": "other_road_users",
+              "title": "Other Road Users",
+              "description": "Cyclists, pedestrians and emergency vehicles."
+            },
+            {
+              "id": "fitness_to_drive",
+              "title": "Fitness to Drive",
+              "description": "Fatigue and distractions."
+            }
+          ]
+        },
+        {
+          "id": "technical_matters",
+          "title": "Technical Matters",
+          "description": "Vehicle warning lights, tyres and core systems.",
+          "topics": [
+            {
+              "id": "warning_lights",
+              "title": "Warning Lights",
+              "description": "Dashboard warnings and faults."
+            },
+            {
+              "id": "tyres_and_brakes",
+              "title": "Tyres and Brakes",
+              "description": "Tyre safety and braking systems."
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "q001",
+          "categoryId": "control_of_vehicle",
+          "topicId": "steering_control",
+          "prompt": "What steering method gives the best control in normal driving?",
+          "explanation": "Push-pull steering keeps both hands in control and avoids crossing arms over the wheel.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q001_b",
+          "options": [
+            { "id": "q001_a", "text": "Turn quickly with one hand whenever possible" },
+            { "id": "q001_b", "text": "Use push-pull steering with both hands" },
+            { "id": "q001_c", "text": "Hold the wheel from inside the rim" },
+            { "id": "q001_d", "text": "Let the wheel slide freely through your hands" }
+          ]
+        },
+        {
+          "id": "q002",
+          "categoryId": "control_of_vehicle",
+          "topicId": "braking_and_stopping",
+          "prompt": "How should you brake for a smooth, controlled stop?",
+          "explanation": "Progressive braking gives following traffic more warning and keeps the car balanced.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q002_a",
+          "options": [
+            { "id": "q002_a", "text": "Brake progressively and ease off near the stop" },
+            { "id": "q002_b", "text": "Brake late and firmly at the last moment" },
+            { "id": "q002_c", "text": "Apply the handbrake before using the foot brake" },
+            { "id": "q002_d", "text": "Pump the brake pedal repeatedly" }
+          ]
+        },
+        {
+          "id": "q003",
+          "categoryId": "control_of_vehicle",
+          "topicId": "steering_control",
+          "prompt": "Before moving off from the roadside, what matters most?",
+          "explanation": "You should check mirrors and blind spots so you only move when it is safe to join traffic.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q003_c",
+          "options": [
+            { "id": "q003_a", "text": "Move quickly while signalling" },
+            { "id": "q003_b", "text": "Sound the horn and edge out" },
+            { "id": "q003_c", "text": "Check mirrors and blind spot before moving" },
+            { "id": "q003_d", "text": "Rev the engine so others hear you" }
+          ]
+        },
+        {
+          "id": "q004",
+          "categoryId": "rules_of_road",
+          "topicId": "junction_rules",
+          "prompt": "What should you do at an amber traffic light if it is safe to stop?",
+          "explanation": "Amber means stop if you can do so safely before the stop line.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q004_d",
+          "options": [
+            { "id": "q004_a", "text": "Accelerate through before it turns red" },
+            { "id": "q004_b", "text": "Continue unless a pedestrian is crossing" },
+            { "id": "q004_c", "text": "Stop only if you see a camera" },
+            { "id": "q004_d", "text": "Stop before the line" }
+          ]
+        },
+        {
+          "id": "q005",
+          "categoryId": "rules_of_road",
+          "topicId": "road_markings",
+          "prompt": "What does a continuous white centre line generally mean?",
+          "explanation": "A continuous centre line normally means you must not cross or straddle it except where specifically allowed.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q005_b",
+          "options": [
+            { "id": "q005_a", "text": "Overtaking is encouraged" },
+            { "id": "q005_b", "text": "Do not cross or straddle it unless permitted" },
+            { "id": "q005_c", "text": "Parking is allowed at all times" },
+            { "id": "q005_d", "text": "Traffic from the left has priority" }
+          ]
+        },
+        {
+          "id": "q006",
+          "categoryId": "rules_of_road",
+          "topicId": "junction_rules",
+          "prompt": "What should you do when a yellow box junction is occupied?",
+          "explanation": "You should only enter when your exit is clear so you do not block the junction.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q006_c",
+          "options": [
+            { "id": "q006_a", "text": "Enter if your light is green" },
+            { "id": "q006_b", "text": "Enter and wait in the box" },
+            { "id": "q006_c", "text": "Wait until your exit is clear" },
+            { "id": "q006_d", "text": "Sound the horn and proceed slowly" }
+          ]
+        },
+        {
+          "id": "q007",
+          "categoryId": "managing_risk",
+          "topicId": "observation",
+          "prompt": "How should you adjust following distance in heavy rain?",
+          "explanation": "Wet roads increase stopping distance, so you need a larger safety gap.",
+          "sourceReference": "Road safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q007_a",
+          "options": [
+            { "id": "q007_a", "text": "Increase the gap to allow longer stopping distance" },
+            { "id": "q007_b", "text": "Keep the same gap as dry weather" },
+            { "id": "q007_c", "text": "Reduce the gap so others cannot cut in" },
+            { "id": "q007_d", "text": "Drive close and brake early" }
+          ]
+        },
+        {
+          "id": "q008",
+          "categoryId": "managing_risk",
+          "topicId": "overtaking",
+          "prompt": "If you begin overtaking and then see oncoming traffic closing quickly, what should you do?",
+          "explanation": "The safest option is to abandon the overtake and return to your lane as soon as it is safe.",
+          "sourceReference": "Road safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q008_c",
+          "options": [
+            { "id": "q008_a", "text": "Accelerate hard and force completion" },
+            { "id": "q008_b", "text": "Brake sharply while staying in the oncoming lane" },
+            { "id": "q008_c", "text": "Return safely to your lane as soon as possible" },
+            { "id": "q008_d", "text": "Flash your headlights and continue" }
+          ]
+        },
+        {
+          "id": "q009",
+          "categoryId": "managing_risk",
+          "topicId": "observation",
+          "prompt": "Approaching a blind bend, what is the safest action?",
+          "explanation": "Reducing speed and holding a safe lane position gives you time to respond to hazards you cannot yet see.",
+          "sourceReference": "Road safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q009_b",
+          "options": [
+            { "id": "q009_a", "text": "Move toward the centre for a better view" },
+            { "id": "q009_b", "text": "Reduce speed and keep proper lane position" },
+            { "id": "q009_c", "text": "Overtake before entering the bend" },
+            { "id": "q009_d", "text": "Use full beam to warn others" }
+          ]
+        },
+        {
+          "id": "q010",
+          "categoryId": "safe_responsible_driving",
+          "topicId": "other_road_users",
+          "prompt": "When an emergency vehicle approaches with lights and siren, what should you do?",
+          "explanation": "You should move safely aside and allow a clear passage without creating another hazard.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q010_b",
+          "options": [
+            { "id": "q010_a", "text": "Brake suddenly where you are" },
+            { "id": "q010_b", "text": "Move safely aside and let it pass" },
+            { "id": "q010_c", "text": "Speed up to stay ahead of it" },
+            { "id": "q010_d", "text": "Block the junction so others stop too" }
+          ]
+        },
+        {
+          "id": "q011",
+          "categoryId": "safe_responsible_driving",
+          "topicId": "fitness_to_drive",
+          "prompt": "If you feel very tired while driving, what should you do?",
+          "explanation": "Fatigue reduces awareness and reaction time. Stop in a safe place and rest rather than pushing on.",
+          "sourceReference": "Road safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q011_d",
+          "options": [
+            { "id": "q011_a", "text": "Open the window and keep going" },
+            { "id": "q011_b", "text": "Drink coffee and continue without stopping" },
+            { "id": "q011_c", "text": "Drive faster so the trip ends sooner" },
+            { "id": "q011_d", "text": "Stop in a safe place and rest" }
+          ]
+        },
+        {
+          "id": "q012",
+          "categoryId": "safe_responsible_driving",
+          "topicId": "other_road_users",
+          "prompt": "Approaching a pedestrian crossing with people waiting, how should you respond?",
+          "explanation": "You should slow down and be ready to stop for pedestrians who may begin crossing.",
+          "sourceReference": "Rules of the Road handbook",
+          "examEligible": true,
+          "correctOptionId": "q012_a",
+          "options": [
+            { "id": "q012_a", "text": "Slow down and be prepared to stop" },
+            { "id": "q012_b", "text": "Continue if they have not stepped out yet" },
+            { "id": "q012_c", "text": "Sound the horn so they wait" },
+            { "id": "q012_d", "text": "Pass quickly before they cross" }
+          ]
+        },
+        {
+          "id": "q013",
+          "categoryId": "technical_matters",
+          "topicId": "warning_lights",
+          "prompt": "A red brake warning light stays on while driving. What should you do?",
+          "explanation": "A red brake warning may indicate a serious fault. Stop safely and investigate immediately.",
+          "sourceReference": "Vehicle safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q013_c",
+          "options": [
+            { "id": "q013_a", "text": "Ignore it until the next service" },
+            { "id": "q013_b", "text": "Drive faster to clear the warning" },
+            { "id": "q013_c", "text": "Stop safely and investigate immediately" },
+            { "id": "q013_d", "text": "Switch the lights off and on again" }
+          ]
+        },
+        {
+          "id": "q014",
+          "categoryId": "technical_matters",
+          "topicId": "tyres_and_brakes",
+          "prompt": "What can under-inflated tyres cause?",
+          "explanation": "Under-inflated tyres reduce stability and can increase braking distance and wear.",
+          "sourceReference": "Vehicle safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q014_b",
+          "options": [
+            { "id": "q014_a", "text": "Better fuel economy" },
+            { "id": "q014_b", "text": "Poor handling and longer braking distance" },
+            { "id": "q014_c", "text": "Improved cornering grip" },
+            { "id": "q014_d", "text": "No change to vehicle behaviour" }
+          ]
+        },
+        {
+          "id": "q015",
+          "categoryId": "technical_matters",
+          "topicId": "tyres_and_brakes",
+          "prompt": "What is the main purpose of ABS brakes?",
+          "explanation": "ABS helps prevent wheel lock so the driver can maintain steering control under heavy braking.",
+          "sourceReference": "Vehicle safety guidance",
+          "examEligible": true,
+          "correctOptionId": "q015_a",
+          "options": [
+            { "id": "q015_a", "text": "Prevent wheel lock during hard braking" },
+            { "id": "q015_b", "text": "Increase top speed" },
+            { "id": "q015_c", "text": "Reduce fuel consumption" },
+            { "id": "q015_d", "text": "Shorten stopping distance on every surface" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,30 +1,29 @@
 # Driver Theory Quiz (Android)
 
-This project is structured for maintainability and feature growth:
+This project has been expanded from a two-screen prototype into an offline-first study app shell for a production-style driving theory product.
 
-- `data/local`: Room database, entities, DAO, and relationship models.
-- `data/repository`: Repository abstraction and implementation.
-- `data/seed`: Local sample quiz seed data.
-- `domain/model`: App-facing quiz models.
-- `ui/quiz`: Quiz UI, state model, and ViewModel.
+## Current architecture
 
-## Current features
+- `data/content`: Bundled JSON question pack parsing and import validation.
+- `data/local`: Room database, DAOs, entities, and relations for content, bookmarks, sessions, and answer history.
+- `data/repository`: Feature-focused repositories for content import, question bank access, bookmarks, sessions, and progress.
+- `domain/model`: App-facing study, progress, and question models.
+- `ui/*`: Navigation Compose screens and StateFlow-driven ViewModels for home, study setup, sessions, results, bookmarks, progress, and settings.
 
-- One local multiple-choice quiz.
-- Quick Quiz mode serves 5 random questions from all categories.
-- 25 sample questions (5 per category).
-- Questions with four options each.
-- Fixed question categories:
-  - `Control of Vehicle`
-  - `Legal Matters/Rules of the Road`
-  - `Managing Risk`
-  - `Safe and Social Responsible Driving`
-  - `Technical Matters`
-- Local Room persistence and startup seed pipeline.
-- Quiz flow with score calculation and restart.
+## Implemented features
 
-## Extend later
+- Bundled JSON content import into Room on first launch.
+- Home dashboard with readiness summary, resume-session entry point, and weakest-category hints.
+- Category-filtered practice mode with immediate explanations.
+- Quick study mode for short mixed sessions.
+- Timed mock exam mode with delayed review until completion.
+- Persisted study sessions and answer history.
+- Results review with per-question explanations and category breakdown.
+- Bookmarking and bookmarked-only review sessions.
+- Progress tracking using completed session history.
+- Weak-question review generated from prior incorrect answers.
 
-- Add more quizzes by inserting additional `QuizEntity`, `QuestionEntity`, and `AnswerOptionEntity` rows.
-- Add user progress/history tables (attempts, scores, bookmarks).
-- Add category filtering and timed tests using new repository APIs and ViewModels.
+## Next content step
+
+- Replace the bundled sample JSON file in `app/src/main/assets/content/question_pack_v1.json` with validated Irish driving theory content.
+- Follow the release checklist in [docs/release-checklist.md](/Users/paddy/AndroidStudioProjects/QuizPrototype/docs/release-checklist.md).

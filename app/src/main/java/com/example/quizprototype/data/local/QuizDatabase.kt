@@ -5,19 +5,44 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.quizprototype.data.local.dao.QuizDao
+import com.example.quizprototype.data.local.dao.BookmarkDao
+import com.example.quizprototype.data.local.dao.ContentDao
+import com.example.quizprototype.data.local.dao.QuestionBankDao
+import com.example.quizprototype.data.local.dao.StudySessionDao
 import com.example.quizprototype.data.local.entity.AnswerOptionEntity
+import com.example.quizprototype.data.local.entity.AnswerRecordEntity
+import com.example.quizprototype.data.local.entity.BookmarkEntity
+import com.example.quizprototype.data.local.entity.CategoryEntity
+import com.example.quizprototype.data.local.entity.ContentVersionEntity
 import com.example.quizprototype.data.local.entity.QuestionEntity
-import com.example.quizprototype.data.local.entity.QuizEntity
+import com.example.quizprototype.data.local.entity.StudySessionEntity
+import com.example.quizprototype.data.local.entity.StudySessionQuestionEntity
+import com.example.quizprototype.data.local.entity.TopicEntity
 
 @Database(
-    entities = [QuizEntity::class, QuestionEntity::class, AnswerOptionEntity::class],
-    version = 1,
+    entities = [
+        CategoryEntity::class,
+        TopicEntity::class,
+        QuestionEntity::class,
+        AnswerOptionEntity::class,
+        ContentVersionEntity::class,
+        BookmarkEntity::class,
+        StudySessionEntity::class,
+        StudySessionQuestionEntity::class,
+        AnswerRecordEntity::class
+    ],
+    version = 2,
     exportSchema = true
 )
-@TypeConverters(QuestionCategoryConverter::class)
+@TypeConverters(AppTypeConverters::class)
 abstract class QuizDatabase : RoomDatabase() {
-    abstract fun quizDao(): QuizDao
+    abstract fun contentDao(): ContentDao
+
+    abstract fun questionBankDao(): QuestionBankDao
+
+    abstract fun bookmarkDao(): BookmarkDao
+
+    abstract fun studySessionDao(): StudySessionDao
 
     companion object {
         private const val DATABASE_NAME = "quiz_database"
@@ -37,7 +62,9 @@ abstract class QuizDatabase : RoomDatabase() {
                 context,
                 QuizDatabase::class.java,
                 DATABASE_NAME
-            ).build()
+            )
+                .fallbackToDestructiveMigration(true)
+                .build()
         }
 
         private fun buildDatabaseWithPrototypeReset(context: Context): QuizDatabase {
