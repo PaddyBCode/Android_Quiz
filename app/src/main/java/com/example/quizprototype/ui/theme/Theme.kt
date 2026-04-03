@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = RoadGreenLight,
-    secondary = SignalSand,
-    tertiary = Moss,
+    secondary = DeepGold,
+    tertiary = SignBlue,
     background = Coal,
     surface = ForestNight,
     onPrimary = Coal,
@@ -26,10 +26,10 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = RoadGreen,
-    secondary = SafetyAmber,
-    tertiary = Slate,
+    secondary = DeepGold,
+    tertiary = SignBlue,
     background = Mist,
-    surface = Color.White,
+    surface = LaneWhite,
     onPrimary = Color.White,
     onSecondary = Color.White,
     onBackground = Coal,
