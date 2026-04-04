@@ -33,6 +33,7 @@ interface BookmarkRepository {
     fun observeIsBookmarked(questionId: String): Flow<Boolean>
     suspend fun getBookmarkedQuestionIds(): Set<String>
     suspend fun toggleBookmark(questionId: String)
+    suspend fun addBookmarks(questionIds: Set<String>): Int
 }
 
 interface StudySessionRepository {

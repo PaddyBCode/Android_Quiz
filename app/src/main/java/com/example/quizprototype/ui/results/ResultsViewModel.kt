@@ -3,6 +3,7 @@ package com.example.quizprototype.ui.results
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.quizprototype.data.repository.BookmarkRepository
 import com.example.quizprototype.data.repository.QuestionBankRepository
 import com.example.quizprototype.data.repository.StudySessionRepository
 import com.example.quizprototype.domain.model.SessionResult
@@ -24,13 +25,17 @@ data class ResultsUiState(
     val isLoading: Boolean = true,
     val result: SessionResult? = null,
     val reviewItems: List<QuestionReviewItem> = emptyList(),
+    val incorrectQuestionIds: Set<String> = emptySet(),
+    val isBookmarkingIncorrect: Boolean = false,
+    val message: String? = null,
     val errorMessage: String? = null
 )
 
 class ResultsViewModel(
     sessionId: Long,
     private val studySessionRepository: StudySessionRepository,
-    private val questionBankRepository: QuestionBankRepository
+    private val questionBankRepository: QuestionBankRepository,
+    private val bookmarkRepository: BookmarkRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ResultsUiState())
@@ -56,12 +61,17 @@ class ResultsViewModel(
                         wasCorrect = answerRecord.isCorrect
                     )
                 }
-                result to reviewItems
-            }.onSuccess { (result, reviewItems) ->
+                Triple(
+                    result,
+                    reviewItems,
+                    result.answerRecords.filterNot { it.isCorrect }.map { it.questionId }.toSet()
+                )
+            }.onSuccess { (result, reviewItems, incorrectQuestionIds) ->
                 _uiState.value = ResultsUiState(
                     isLoading = false,
                     result = result,
-                    reviewItems = reviewItems
+                    reviewItems = reviewItems,
+                    incorrectQuestionIds = incorrectQuestionIds
                 )
             }.onFailure { throwable ->
                 _uiState.value = ResultsUiState(
@@ -72,18 +82,50 @@ class ResultsViewModel(
         }
     }
 
+    fun bookmarkIncorrectQuestions() {
+        val incorrectQuestionIds = uiState.value.incorrectQuestionIds
+        if (incorrectQuestionIds.isEmpty() || uiState.value.isBookmarkingIncorrect) return
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isBookmarkingIncorrect = true, message = null)
+            runCatching {
+                bookmarkRepository.addBookmarks(incorrectQuestionIds)
+            }.onSuccess { addedCount ->
+                _uiState.value = _uiState.value.copy(
+                    isBookmarkingIncorrect = false,
+                    message = if (addedCount == 0) {
+                        "All incorrect questions are already bookmarked."
+                    } else {
+                        "$addedCount incorrect questions bookmarked."
+                    }
+                )
+            }.onFailure { throwable ->
+                _uiState.value = _uiState.value.copy(
+                    isBookmarkingIncorrect = false,
+                    message = throwable.message ?: "Unable to bookmark incorrect questions."
+                )
+            }
+        }
+    }
+
+    fun clearMessage() {
+        _uiState.value = _uiState.value.copy(message = null)
+    }
+
     companion object {
         fun provideFactory(
             sessionId: Long,
             studySessionRepository: StudySessionRepository,
-            questionBankRepository: QuestionBankRepository
+            questionBankRepository: QuestionBankRepository,
+            bookmarkRepository: BookmarkRepository
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return ResultsViewModel(
                         sessionId = sessionId,
                         studySessionRepository = studySessionRepository,
-                        questionBankRepository = questionBankRepository
+                        questionBankRepository = questionBankRepository,
+                        bookmarkRepository = bookmarkRepository
                     ) as T
                 }
             }

@@ -229,6 +229,6 @@ class DefaultStudySessionRepository(
     }
 
     companion object {
-        private const val PASS_THRESHOLD_PERCENT = 80
+        private const val PASS_THRESHOLD_PERCENT = 75
     }
 }

@@ -313,16 +313,20 @@ private fun DriverTheoryNavGraph(
                 factory = ResultsViewModel.provideFactory(
                     sessionId = sessionId,
                     studySessionRepository = appContainer.studySessionRepository,
-                    questionBankRepository = appContainer.questionBankRepository
+                    questionBankRepository = appContainer.questionBankRepository,
+                    bookmarkRepository = appContainer.bookmarkRepository
                 )
             )
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             ResultsScreen(
                 uiState = uiState,
+                onBookmarkIncorrect = viewModel::bookmarkIncorrectQuestions,
+                onDismissMessage = viewModel::clearMessage,
                 onBackHome = {
                     navController.navigate(AppDestinations.HOME) {
-                        popUpTo(AppDestinations.HOME) { inclusive = true }
+                        popUpTo(AppDestinations.HOME) { inclusive = false }
+                        launchSingleTop = true
                     }
                 }
             )

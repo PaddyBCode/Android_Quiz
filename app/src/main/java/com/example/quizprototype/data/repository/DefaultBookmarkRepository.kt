@@ -47,4 +47,20 @@ class DefaultBookmarkRepository(
             analyticsLogger.logEvent("bookmark_added", mapOf("questionId" to questionId))
         }
     }
+
+    override suspend fun addBookmarks(questionIds: Set<String>): Int {
+        if (questionIds.isEmpty()) return 0
+        val bookmarkedIds = bookmarkDao.getBookmarkedQuestionIds().toSet()
+        val newQuestionIds = questionIds - bookmarkedIds
+        newQuestionIds.forEach { questionId ->
+            bookmarkDao.upsertBookmark(
+                BookmarkEntity(
+                    questionId = questionId,
+                    createdAtEpochMillis = System.currentTimeMillis()
+                )
+            )
+            analyticsLogger.logEvent("bookmark_added", mapOf("questionId" to questionId))
+        }
+        return newQuestionIds.size
+    }
 }
