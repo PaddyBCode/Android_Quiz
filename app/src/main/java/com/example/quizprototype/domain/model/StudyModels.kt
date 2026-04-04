@@ -167,7 +167,9 @@ data class DashboardSummary(
     val averageScorePercent: Int,
     val activeSession: SessionSummary?,
     val lastResult: SessionResult?,
-    val weakestCategories: List<WeakCategory>
+    val weakestCategories: List<WeakCategory>,
+    val focusNextCategory: WeakCategory?,
+    val strongestCategory: WeakCategory?
 )
 
 data class ProgressSnapshot(

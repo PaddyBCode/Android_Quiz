@@ -38,6 +38,7 @@ class DefaultProgressRepository(
                 .average()
                 .let { value -> if (value.isNaN()) 0 else value.toInt() }
             val weakCategories = computeWeakCategories(categories.map { it.id to it.title }.toMap(), sessions, answers)
+            val strongestCategory = weakCategories.maxByOrNull { it.accuracy }
             DashboardSummary(
                 totalQuestions = totalQuestions,
                 completedSessions = sessions.size,
@@ -47,7 +48,9 @@ class DefaultProgressRepository(
                 averageScorePercent = averageScorePercent.coerceIn(0, 100),
                 activeSession = activeSession,
                 lastResult = recentResults.firstOrNull(),
-                weakestCategories = weakCategories.take(3)
+                weakestCategories = weakCategories.take(3),
+                focusNextCategory = weakCategories.firstOrNull(),
+                strongestCategory = strongestCategory
             )
         }
     }

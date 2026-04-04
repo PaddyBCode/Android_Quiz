@@ -89,6 +89,50 @@ class HomeViewModel(
         }
     }
 
+    fun startQuickStudySession() {
+        viewModelScope.launch {
+            runCatching {
+                studySessionRepository.startSession(
+                    SessionConfig(
+                        mode = StudyMode.QUICK_STUDY,
+                        title = "Quick Study",
+                        query = QuestionQuery(),
+                        questionLimit = 5,
+                        durationLimitSeconds = null,
+                        immediateFeedback = true,
+                        allowReviewBeforeSubmit = true
+                    )
+                )
+            }.onSuccess { sessionId ->
+                _events.emit(HomeEvent.OpenSession(sessionId))
+            }.onFailure {
+                transientMessage.value = "Unable to start quick study right now."
+            }
+        }
+    }
+
+    fun startExamStyleMockSession() {
+        viewModelScope.launch {
+            runCatching {
+                studySessionRepository.startSession(
+                    SessionConfig(
+                        mode = StudyMode.MOCK_EXAM,
+                        title = "Exam Style Mock",
+                        query = QuestionQuery(examEligibleOnly = true),
+                        questionLimit = 30,
+                        durationLimitSeconds = 45 * 60,
+                        immediateFeedback = false,
+                        allowReviewBeforeSubmit = false
+                    )
+                )
+            }.onSuccess { sessionId ->
+                _events.emit(HomeEvent.OpenSession(sessionId))
+            }.onFailure {
+                transientMessage.value = "Unable to start the exam style mock right now."
+            }
+        }
+    }
+
     companion object {
         fun provideFactory(
             questionBankRepository: QuestionBankRepository,
