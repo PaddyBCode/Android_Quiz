@@ -2,6 +2,7 @@ package com.example.quizprototype.ui.session
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.quizprototype.ui.question.QuestionAssetImage
 import com.example.quizprototype.ui.formatDuration
 
 @Composable
@@ -69,7 +71,7 @@ fun SessionScreen(
 
                 LazyColumn(
                     modifier = Modifier.padding(innerPadding),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(20.dp),
+                    contentPadding = PaddingValues(20.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item {
@@ -115,6 +117,10 @@ fun SessionScreen(
                             ) {
                                 Text(currentQuestion.question.categoryTitle, style = MaterialTheme.typography.labelLarge)
                                 Text(currentQuestion.question.topicTitle, style = MaterialTheme.typography.labelMedium)
+                                QuestionAssetImage(
+                                    assetName = currentQuestion.question.assetName,
+                                    contentDescription = currentQuestion.question.prompt
+                                )
                                 Text(currentQuestion.question.prompt, style = MaterialTheme.typography.titleLarge)
                                 OutlinedButton(onClick = onToggleBookmark) {
                                     Text(if (currentQuestion.isBookmarked) "Remove bookmark" else "Add bookmark")

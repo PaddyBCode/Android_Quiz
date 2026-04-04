@@ -1,26 +1,18 @@
-package com.example.quizprototype.ui.study
+package com.example.quizprototype.ui.study_room
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.quizprototype.data.repository.QuestionBankRepository
 import com.example.quizprototype.data.repository.StudySessionRepository
-import com.example.quizprototype.domain.model.Category
-import com.example.quizprototype.domain.model.QuestionQuery
 import com.example.quizprototype.domain.model.SessionConfig
 import com.example.quizprototype.domain.model.StudyMode
+import com.example.quizprototype.domain.model.QuestionQuery
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 data class StudyModePickerUiState(
-    val categories: List<Category> = emptyList(),
-    val selectedCategoryIds: Set<String> = emptySet(),
     val isStarting: Boolean = false,
     val errorMessage: String? = null
 )
@@ -30,56 +22,24 @@ sealed interface StudyModePickerEvent {
 }
 
 class StudyModePickerViewModel(
-    questionBankRepository: QuestionBankRepository,
     private val studySessionRepository: StudySessionRepository
 ) : ViewModel() {
 
-    private val selectedCategoryIds = MutableStateFlow<Set<String>>(emptySet())
-    private val starting = MutableStateFlow(false)
-    private val errorMessage = MutableStateFlow<String?>(null)
+    private val _uiState = MutableStateFlow(StudyModePickerUiState())
     private val _events = MutableSharedFlow<StudyModePickerEvent>()
     val events = _events.asSharedFlow()
-
-    val uiState: StateFlow<StudyModePickerUiState> = combine(
-        questionBankRepository.observeCategories(),
-        selectedCategoryIds,
-        starting,
-        errorMessage
-    ) { categories, selectedIds, isStarting, error ->
-        StudyModePickerUiState(
-            categories = categories,
-            selectedCategoryIds = selectedIds,
-            isStarting = isStarting,
-            errorMessage = error
-        )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = StudyModePickerUiState()
-    )
-
-    fun toggleCategory(categoryId: String) {
-        selectedCategoryIds.value = selectedCategoryIds.value.toMutableSet().apply {
-            if (!add(categoryId)) {
-                remove(categoryId)
-            }
-        }
-    }
-
-    fun clearSelection() {
-        selectedCategoryIds.value = emptySet()
-    }
+    val uiState = _uiState
 
     fun clearError() {
-        errorMessage.value = null
+        _uiState.value = _uiState.value.copy(errorMessage = null)
     }
 
     fun startPracticeSession() {
         startSession(
             config = SessionConfig(
                 mode = StudyMode.PRACTICE,
-                title = if (selectedCategoryIds.value.isEmpty()) "Practice Session" else "Category Practice",
-                query = QuestionQuery(categoryIds = selectedCategoryIds.value),
+                title = "Practice Session",
+                query = QuestionQuery(),
                 questionLimit = null,
                 durationLimitSeconds = null,
                 immediateFeedback = true,
@@ -93,7 +53,7 @@ class StudyModePickerViewModel(
             config = SessionConfig(
                 mode = StudyMode.QUICK_STUDY,
                 title = "Quick Study",
-                query = QuestionQuery(categoryIds = selectedCategoryIds.value),
+                query = QuestionQuery(),
                 questionLimit = 5,
                 durationLimitSeconds = null,
                 immediateFeedback = true,
@@ -102,15 +62,12 @@ class StudyModePickerViewModel(
         )
     }
 
-    fun startMockExamSession() {
+    fun startMiniMockSession() {
         startSession(
             config = SessionConfig(
                 mode = StudyMode.MOCK_EXAM,
-                title = "Mock Exam",
-                query = QuestionQuery(
-                    categoryIds = selectedCategoryIds.value,
-                    examEligibleOnly = true
-                ),
+                title = "Mini Mock",
+                query = QuestionQuery(examEligibleOnly = true),
                 questionLimit = 10,
                 durationLimitSeconds = 15 * 60,
                 immediateFeedback = false,
@@ -119,30 +76,45 @@ class StudyModePickerViewModel(
         )
     }
 
+    fun startExamStyleMockSession() {
+        startSession(
+            config = SessionConfig(
+                mode = StudyMode.MOCK_EXAM,
+                title = "Exam Style Mock",
+                query = QuestionQuery(examEligibleOnly = true),
+                questionLimit = 30,
+                durationLimitSeconds = 45 * 60,
+                immediateFeedback = false,
+                allowReviewBeforeSubmit = false
+            )
+        )
+    }
+
     private fun startSession(config: SessionConfig) {
         viewModelScope.launch {
-            starting.value = true
-            errorMessage.value = null
+            _uiState.value = _uiState.value.copy(isStarting = true, errorMessage = null)
             runCatching {
                 studySessionRepository.startSession(config)
             }.onSuccess { sessionId ->
                 _events.emit(StudyModePickerEvent.OpenSession(sessionId))
             }.onFailure { throwable ->
-                errorMessage.value = throwable.message ?: "Unable to start session."
+                _uiState.value = _uiState.value.copy(
+                    isStarting = false,
+                    errorMessage = throwable.message ?: "Unable to start session."
+                )
+                return@launch
             }
-            starting.value = false
+            _uiState.value = _uiState.value.copy(isStarting = false)
         }
     }
 
     companion object {
         fun provideFactory(
-            questionBankRepository: QuestionBankRepository,
             studySessionRepository: StudySessionRepository
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return StudyModePickerViewModel(
-                        questionBankRepository = questionBankRepository,
                         studySessionRepository = studySessionRepository
                     ) as T
                 }

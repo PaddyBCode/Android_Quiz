@@ -1,16 +1,15 @@
-package com.example.quizprototype.ui.study
+package com.example.quizprototype.ui.study_room
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -22,23 +21,23 @@ import androidx.compose.ui.unit.dp
 import com.example.quizprototype.ui.theme.DeepGold
 import com.example.quizprototype.ui.theme.LaneWhite
 import com.example.quizprototype.ui.theme.RoadGreen
-import com.example.quizprototype.ui.theme.SignBlue
 
 @Composable
 fun StudyModePickerScreen(
     uiState: StudyModePickerUiState,
     onBack: () -> Unit,
-    onToggleCategory: (String) -> Unit,
-    onClearSelection: () -> Unit,
+    onOpenStudyByCategory: () -> Unit,
+    onOpenReviewQuestions: () -> Unit,
     onStartPractice: () -> Unit,
     onStartQuickStudy: () -> Unit,
-    onStartMockExam: () -> Unit,
+    onStartMiniMock: () -> Unit,
+    onStartExamStyleMock: () -> Unit,
     onDismissError: () -> Unit
 ) {
     Scaffold { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(20.dp),
+            contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
@@ -60,7 +59,7 @@ fun StudyModePickerScreen(
                                 color = LaneWhite
                             )
                             Text(
-                                "Use category filters to focus practice or run a mixed mock exam.",
+                                "Pick a study route, focus on one category, or review every question with answers visible.",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = LaneWhite.copy(alpha = 0.9f)
                             )
@@ -94,28 +93,23 @@ fun StudyModePickerScreen(
             }
 
             item {
-                Card {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Text("Category filters", style = MaterialTheme.typography.titleMedium)
-                        uiState.categories.forEach { category ->
-                            FilterChip(
-                                selected = uiState.selectedCategoryIds.contains(category.id),
-                                onClick = { onToggleCategory(category.id) },
-                                label = { Text("${category.title} (${category.questionCount})") }
-                            )
-                        }
-                        if (uiState.selectedCategoryIds.isNotEmpty()) {
-                            OutlinedButton(onClick = onClearSelection) {
-                                Text("Clear filters")
-                            }
-                        }
-                    }
-                }
+                StudyModeCard(
+                    title = "Study by Category",
+                    description = "Choose one category and run a focused practice session.",
+                    buttonLabel = "Choose category",
+                    enabled = !uiState.isStarting,
+                    onClick = onOpenStudyByCategory
+                )
             }
-
+            item {
+                StudyModeCard(
+                    title = "Review the Questions",
+                    description = "Browse all questions, bookmarked questions, or a single category with answers already shown.",
+                    buttonLabel = "Open review mode",
+                    enabled = !uiState.isStarting,
+                    onClick = onOpenReviewQuestions
+                )
+            }
             item {
                 StudyModeCard(
                     title = "Practice",
@@ -136,11 +130,20 @@ fun StudyModePickerScreen(
             }
             item {
                 StudyModeCard(
-                    title = "Mock exam",
+                    title = "Mini Mock",
                     description = "Timed exam-style session with results and review at the end.",
-                    buttonLabel = "Start mock exam",
+                    buttonLabel = "Start mini mock",
                     enabled = !uiState.isStarting,
-                    onClick = onStartMockExam
+                    onClick = onStartMiniMock
+                )
+            }
+            item {
+                StudyModeCard(
+                    title = "Exam Style Mock",
+                    description = "A 45-minute timed mock with 30 questions to simulate a longer exam run.",
+                    buttonLabel = "Start exam style mock",
+                    enabled = !uiState.isStarting,
+                    onClick = onStartExamStyleMock
                 )
             }
         }

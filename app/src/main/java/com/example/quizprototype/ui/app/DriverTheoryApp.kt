@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -35,15 +34,23 @@ import com.example.quizprototype.ui.onboarding.OnboardingScreen
 import com.example.quizprototype.ui.onboarding.OnboardingViewModel
 import com.example.quizprototype.ui.progress.ProgressScreen
 import com.example.quizprototype.ui.progress.ProgressViewModel
+import com.example.quizprototype.ui.review.ReviewPickerScreen
+import com.example.quizprototype.ui.review.ReviewPickerViewModel
+import com.example.quizprototype.ui.review.ReviewQuestionsScreen
+import com.example.quizprototype.ui.review.ReviewQuestionsViewModel
+import com.example.quizprototype.ui.review.ReviewScope
 import com.example.quizprototype.ui.results.ResultsScreen
 import com.example.quizprototype.ui.results.ResultsViewModel
 import com.example.quizprototype.ui.session.SessionEvent
 import com.example.quizprototype.ui.session.SessionScreen
 import com.example.quizprototype.ui.session.SessionViewModel
 import com.example.quizprototype.ui.settings.SettingsScreen
-import com.example.quizprototype.ui.study.StudyModePickerEvent
-import com.example.quizprototype.ui.study.StudyModePickerScreen
-import com.example.quizprototype.ui.study.StudyModePickerViewModel
+import com.example.quizprototype.ui.study_room.CategoryStudyEvent
+import com.example.quizprototype.ui.study_room.CategoryStudyScreen
+import com.example.quizprototype.ui.study_room.CategoryStudyViewModel
+import com.example.quizprototype.ui.study_room.StudyModePickerEvent
+import com.example.quizprototype.ui.study_room.StudyModePickerScreen
+import com.example.quizprototype.ui.study_room.StudyModePickerViewModel
 
 @Composable
 fun DriverTheoryApp(appContainer: AppContainer) {
@@ -151,7 +158,6 @@ private fun DriverTheoryNavGraph(
         composable(AppDestinations.STUDY_PICKER) {
             val viewModel: StudyModePickerViewModel = viewModel(
                 factory = StudyModePickerViewModel.provideFactory(
-                    questionBankRepository = appContainer.questionBankRepository,
                     studySessionRepository = appContainer.studySessionRepository
                 )
             )
@@ -168,12 +174,93 @@ private fun DriverTheoryNavGraph(
             StudyModePickerScreen(
                 uiState = uiState,
                 onBack = { navController.popBackStack() },
-                onToggleCategory = viewModel::toggleCategory,
-                onClearSelection = viewModel::clearSelection,
+                onOpenStudyByCategory = { navController.navigate(AppDestinations.CATEGORY_STUDY) },
+                onOpenReviewQuestions = { navController.navigate(AppDestinations.REVIEW_PICKER) },
                 onStartPractice = viewModel::startPracticeSession,
                 onStartQuickStudy = viewModel::startQuickStudySession,
-                onStartMockExam = viewModel::startMockExamSession,
+                onStartMiniMock = viewModel::startMiniMockSession,
+                onStartExamStyleMock = viewModel::startExamStyleMockSession,
                 onDismissError = viewModel::clearError
+            )
+        }
+
+        composable(AppDestinations.CATEGORY_STUDY) {
+            val viewModel: CategoryStudyViewModel = viewModel(
+                factory = CategoryStudyViewModel.provideFactory(
+                    questionBankRepository = appContainer.questionBankRepository,
+                    studySessionRepository = appContainer.studySessionRepository
+                )
+            )
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(viewModel) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is CategoryStudyEvent.OpenSession -> navController.navigate(AppDestinations.sessionRoute(event.sessionId))
+                    }
+                }
+            }
+
+            CategoryStudyScreen(
+                uiState = uiState,
+                onBack = { navController.popBackStack() },
+                onStartCategory = viewModel::startCategorySession,
+                onDismissError = viewModel::clearError
+            )
+        }
+
+        composable(AppDestinations.REVIEW_PICKER) {
+            val viewModel: ReviewPickerViewModel = viewModel(
+                factory = ReviewPickerViewModel.provideFactory(appContainer.questionBankRepository)
+            )
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            ReviewPickerScreen(
+                uiState = uiState,
+                onBack = { navController.popBackStack() },
+                onOpenAllQuestions = {
+                    navController.navigate(AppDestinations.reviewQuestionsRoute(ReviewScope.ALL.name))
+                },
+                onOpenBookmarkedQuestions = {
+                    navController.navigate(AppDestinations.reviewQuestionsRoute(ReviewScope.BOOKMARKED.name))
+                },
+                onOpenCategory = { category ->
+                    navController.navigate(
+                        AppDestinations.reviewQuestionsRoute(
+                            scope = ReviewScope.CATEGORY.name,
+                            filterId = category.id
+                        )
+                    )
+                }
+            )
+        }
+
+        composable(
+            route = AppDestinations.REVIEW_QUESTIONS_ROUTE,
+            arguments = listOf(
+                navArgument(AppDestinations.REVIEW_SCOPE_ARG) { type = NavType.StringType },
+                navArgument(AppDestinations.REVIEW_FILTER_ID_ARG) { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val scopeValue = backStackEntry.arguments?.getString(AppDestinations.REVIEW_SCOPE_ARG) ?: ReviewScope.ALL.name
+            val filterId = backStackEntry.arguments?.getString(AppDestinations.REVIEW_FILTER_ID_ARG) ?: "none"
+            val reviewScope = ReviewScope.fromRoute(scopeValue)
+            val viewModel: ReviewQuestionsViewModel = viewModel(
+                factory = ReviewQuestionsViewModel.provideFactory(
+                    scope = reviewScope,
+                    filterId = filterId,
+                    questionBankRepository = appContainer.questionBankRepository
+                )
+            )
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            ReviewQuestionsScreen(
+                uiState = uiState,
+                onBack = { navController.popBackStack() },
+                onJumpToQuestion = viewModel::jumpToQuestion,
+                onPreviousQuestion = viewModel::previousQuestion,
+                onNextQuestion = viewModel::nextQuestion,
+                onToggleNotes = viewModel::toggleNotes
             )
         }
 

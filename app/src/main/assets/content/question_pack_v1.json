@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "licenceTypes": [
     {
       "id": "CAR",
@@ -569,6 +569,40 @@
             { "id": "q030_b", "text": "Drive faster so the engine clears it" },
             { "id": "q030_c", "text": "Turn the radio off and on" },
             { "id": "q030_d", "text": "Check the handbook and stop safely if needed" }
+          ]
+        },
+        {
+          "id": "q031",
+          "categoryId": "rules_of_road",
+          "topicId": "junction_rules",
+          "prompt": "What does this road sign mean?",
+          "explanation": "A no-entry sign means you must not enter the road or lane beyond the sign.",
+          "sourceReference": "Rules of the Road handbook",
+          "assetName": "sign_no_entry",
+          "examEligible": true,
+          "correctOptionId": "q031_a",
+          "options": [
+            { "id": "q031_a", "text": "Do not enter this road" },
+            { "id": "q031_b", "text": "Parking is prohibited ahead" },
+            { "id": "q031_c", "text": "No overtaking allowed" },
+            { "id": "q031_d", "text": "Buses only beyond this point" }
+          ]
+        },
+        {
+          "id": "q032",
+          "categoryId": "rules_of_road",
+          "topicId": "junction_rules",
+          "prompt": "What does this road sign require you to do?",
+          "explanation": "A yield sign means you must give way to traffic on the road you are joining when necessary.",
+          "sourceReference": "Rules of the Road handbook",
+          "assetName": "sign_yield",
+          "examEligible": true,
+          "correctOptionId": "q032_c",
+          "options": [
+            { "id": "q032_a", "text": "Stop in every case" },
+            { "id": "q032_b", "text": "Proceed without slowing" },
+            { "id": "q032_c", "text": "Yield to traffic on the road ahead" },
+            { "id": "q032_d", "text": "Turn back at the next junction" }
           ]
         }
       ]
