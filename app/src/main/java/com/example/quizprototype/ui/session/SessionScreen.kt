@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilterChip
@@ -19,10 +20,12 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.quizprototype.ui.question.QuestionAssetImage
 import com.example.quizprototype.ui.formatDuration
+import com.example.quizprototype.ui.theme.DeepGold
 
 @Composable
 fun SessionScreen(
@@ -115,7 +118,11 @@ fun SessionScreen(
                                 modifier = Modifier.padding(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Text(currentQuestion.question.categoryTitle, style = MaterialTheme.typography.labelLarge)
+                                Text(
+                                    currentQuestion.question.categoryTitle,
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = DeepGold
+                                )
                                 Text(currentQuestion.question.topicTitle, style = MaterialTheme.typography.labelMedium)
                                 QuestionAssetImage(
                                     assetName = currentQuestion.question.assetName,
@@ -130,7 +137,16 @@ fun SessionScreen(
                     }
 
                     itemsIndexed(currentQuestion.question.options) { _, option ->
-                        Card {
+                        val answerLocked = selectedOptionId != null
+                        val borderColor = when {
+                            selectedOptionId == option.id && option.id == correctOptionId -> MaterialTheme.colorScheme.primary
+                            selectedOptionId == option.id && option.id != correctOptionId -> MaterialTheme.colorScheme.error
+                            selectedOptionId != null && selectedOptionId != correctOptionId && option.id == correctOptionId -> MaterialTheme.colorScheme.primary
+                            else -> Color.Transparent
+                        }
+                        Card(
+                            border = BorderStroke(2.dp, borderColor)
+                        ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -139,11 +155,11 @@ fun SessionScreen(
                             ) {
                                 RadioButton(
                                     selected = selectedOptionId == option.id,
-                                    onClick = { onSelectOption(option.id) }
+                                    onClick = if (answerLocked) null else ({ onSelectOption(option.id) })
                                 )
                                 Column(modifier = Modifier.padding(vertical = 14.dp)) {
                                     Text(option.text, style = MaterialTheme.typography.bodyLarge)
-                                    if (feedbackVisible && option.id == correctOptionId) {
+                                    if (selectedOptionId != null && option.id == correctOptionId) {
                                         Text("Correct answer", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                                     }
                                 }

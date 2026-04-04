@@ -72,6 +72,7 @@ class SessionViewModel(
 
     fun selectOption(optionId: String) {
         val currentQuestion = uiState.value.session?.currentQuestion ?: return
+        if (currentQuestion.selectedOptionId != null) return
         viewModelScope.launch {
             studySessionRepository.submitAnswer(
                 sessionId = sessionId,
