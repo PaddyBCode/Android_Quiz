@@ -81,6 +81,9 @@ interface StudySessionDao {
     )
     suspend fun getWeakQuestionIds(): List<String>
 
+    @Query("DELETE FROM study_sessions")
+    suspend fun deleteAllSessions()
+
     @Transaction
     suspend fun createSession(
         session: StudySessionEntity,

@@ -82,6 +82,8 @@ class DefaultAppContainer(context: Context) : AppContainer {
     override val userProfileRepository: UserProfileRepository by lazy {
         DefaultUserProfileRepository(
             userProfileDao = quizDatabase.userProfileDao(),
+            bookmarkDao = quizDatabase.bookmarkDao(),
+            studySessionDao = quizDatabase.studySessionDao(),
             analyticsLogger = analyticsLogger
         )
     }

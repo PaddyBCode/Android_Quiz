@@ -27,6 +27,9 @@ interface BookmarkDao {
     @Query("DELETE FROM bookmarks WHERE questionId = :questionId")
     suspend fun deleteBookmark(questionId: String)
 
+    @Query("DELETE FROM bookmarks")
+    suspend fun deleteAllBookmarks()
+
     @Query("SELECT COUNT(*) FROM bookmarks")
     fun observeBookmarkCount(): Flow<Int>
 }

@@ -44,7 +44,9 @@ import com.example.quizprototype.ui.results.ResultsViewModel
 import com.example.quizprototype.ui.session.SessionEvent
 import com.example.quizprototype.ui.session.SessionScreen
 import com.example.quizprototype.ui.session.SessionViewModel
+import com.example.quizprototype.ui.settings.SettingsEvent
 import com.example.quizprototype.ui.settings.SettingsScreen
+import com.example.quizprototype.ui.settings.SettingsViewModel
 import com.example.quizprototype.ui.study_room.CategoryStudyEvent
 import com.example.quizprototype.ui.study_room.CategoryStudyScreen
 import com.example.quizprototype.ui.study_room.CategoryStudyViewModel
@@ -97,11 +99,25 @@ private fun DriverTheoryNavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = if (hasUserProfile) AppDestinations.HOME else AppDestinations.ONBOARDING
+        startDestination = if (hasUserProfile) AppDestinations.HOME else AppDestinations.onboardingRoute()
     ) {
-        composable(AppDestinations.ONBOARDING) {
+        composable(
+            route = AppDestinations.ONBOARDING_ROUTE,
+            arguments = listOf(
+                navArgument(AppDestinations.PREFILL_USERNAME_ARG) {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) { backStackEntry ->
+            val prefillUsername = backStackEntry.arguments?.getString(AppDestinations.PREFILL_USERNAME_ARG).orEmpty()
             val viewModel: OnboardingViewModel = viewModel(
-                factory = OnboardingViewModel.provideFactory(appContainer.userProfileRepository)
+                key = "onboarding:$prefillUsername",
+                factory = OnboardingViewModel.provideFactory(
+                    initialUsername = prefillUsername,
+                    userProfileRepository = appContainer.userProfileRepository
+                )
             )
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -110,7 +126,7 @@ private fun DriverTheoryNavGraph(
                     when (event) {
                         OnboardingEvent.ProfileCreated -> {
                             navController.navigate(AppDestinations.HOME) {
-                                popUpTo(AppDestinations.ONBOARDING) { inclusive = true }
+                                popUpTo(AppDestinations.ONBOARDING_ROUTE) { inclusive = true }
                             }
                         }
                     }
@@ -368,7 +384,32 @@ private fun DriverTheoryNavGraph(
         }
 
         composable(AppDestinations.SETTINGS) {
-            SettingsScreen(onBack = { navController.popBackStack() })
+            val viewModel: SettingsViewModel = viewModel(
+                factory = SettingsViewModel.provideFactory(appContainer.userProfileRepository)
+            )
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(viewModel) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is SettingsEvent.ProfileReset -> {
+                            navController.navigate(
+                                AppDestinations.onboardingRoute(event.previousUsername)
+                            ) {
+                                popUpTo(AppDestinations.HOME) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                }
+            }
+
+            SettingsScreen(
+                uiState = uiState,
+                onConfirmReset = viewModel::resetProfile,
+                onDismissError = viewModel::clearError,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

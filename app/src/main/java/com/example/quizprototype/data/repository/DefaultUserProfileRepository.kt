@@ -1,5 +1,7 @@
 package com.example.quizprototype.data.repository
 
+import com.example.quizprototype.data.local.dao.BookmarkDao
+import com.example.quizprototype.data.local.dao.StudySessionDao
 import com.example.quizprototype.data.local.dao.UserProfileDao
 import com.example.quizprototype.data.local.entity.UserProfileEntity
 import com.example.quizprototype.domain.model.UserProfile
@@ -8,6 +10,8 @@ import kotlinx.coroutines.flow.map
 
 class DefaultUserProfileRepository(
     private val userProfileDao: UserProfileDao,
+    private val bookmarkDao: BookmarkDao,
+    private val studySessionDao: StudySessionDao,
     private val analyticsLogger: AnalyticsLogger
 ) : UserProfileRepository {
 
@@ -35,6 +39,18 @@ class DefaultUserProfileRepository(
             "profile_created",
             mapOf("usernameLength" to trimmedUsername.length.toString())
         )
+    }
+
+    override suspend fun resetProfile(): String? {
+        val previousUsername = userProfileDao.getUserProfile()?.username
+        bookmarkDao.deleteAllBookmarks()
+        studySessionDao.deleteAllSessions()
+        userProfileDao.deleteUserProfile()
+        analyticsLogger.logEvent(
+            "profile_reset",
+            mapOf("hadPreviousUsername" to (previousUsername != null).toString())
+        )
+        return previousUsername
     }
 }
 

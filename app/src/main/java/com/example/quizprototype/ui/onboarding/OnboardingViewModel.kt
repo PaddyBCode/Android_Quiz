@@ -24,10 +24,11 @@ sealed interface OnboardingEvent {
 }
 
 class OnboardingViewModel(
+    initialUsername: String,
     private val userProfileRepository: UserProfileRepository
 ) : ViewModel() {
 
-    private val username = MutableStateFlow("")
+    private val username = MutableStateFlow(initialUsername)
     private val isSaving = MutableStateFlow(false)
     private val errorMessage = MutableStateFlow<String?>(null)
     private val _events = MutableSharedFlow<OnboardingEvent>()
@@ -46,7 +47,7 @@ class OnboardingViewModel(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = OnboardingUiState()
+        initialValue = OnboardingUiState(username = initialUsername)
     )
 
     fun onUsernameChanged(value: String) {
@@ -69,10 +70,13 @@ class OnboardingViewModel(
     }
 
     companion object {
-        fun provideFactory(userProfileRepository: UserProfileRepository): ViewModelProvider.Factory =
+        fun provideFactory(
+            initialUsername: String,
+            userProfileRepository: UserProfileRepository
+        ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return OnboardingViewModel(userProfileRepository) as T
+                    return OnboardingViewModel(initialUsername, userProfileRepository) as T
                 }
             }
     }

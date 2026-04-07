@@ -62,4 +62,5 @@ interface UserProfileRepository {
     fun observeUserProfile(): Flow<UserProfile?>
     suspend fun getUserProfile(): UserProfile?
     suspend fun createProfile(username: String)
+    suspend fun resetProfile(): String?
 }
