@@ -2,6 +2,7 @@ package com.example.quizprototype.data
 
 import android.content.Context
 import com.example.quizprototype.data.content.BundledQuestionPackParser
+import com.example.quizprototype.data.content.BundledQuestionPackValidator
 import com.example.quizprototype.data.local.QuizDatabase
 import com.example.quizprototype.data.repository.AndroidAnalyticsLogger
 import com.example.quizprototype.data.repository.AnalyticsLogger
@@ -40,6 +41,17 @@ class DefaultAppContainer(context: Context) : AppContainer {
             assetManager = context.assets,
             contentDao = quizDatabase.contentDao(),
             parser = BundledQuestionPackParser(),
+            validator = BundledQuestionPackValidator(
+                assetExists = { assetPath ->
+                    runCatching {
+                        context.assets.open(assetPath).close()
+                        true
+                    }.getOrDefault(false)
+                },
+                drawableExists = { resourceName ->
+                    context.resources.getIdentifier(resourceName, "drawable", context.packageName) != 0
+                }
+            ),
             analyticsLogger = analyticsLogger
         )
     }
