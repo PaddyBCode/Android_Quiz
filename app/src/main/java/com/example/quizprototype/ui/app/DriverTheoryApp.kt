@@ -1,5 +1,6 @@
 package com.example.quizprototype.ui.app
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.quizprototype.data.AppContainer
+import com.example.quizprototype.ui.achievements.AchievementsScreen
+import com.example.quizprototype.ui.achievements.AchievementUnlockToastHost
+import com.example.quizprototype.ui.achievements.AchievementsViewModel
 import com.example.quizprototype.ui.bookmarks.BookmarksEvent
 import com.example.quizprototype.ui.bookmarks.BookmarksScreen
 import com.example.quizprototype.ui.bookmarks.BookmarksViewModel
@@ -82,10 +86,16 @@ fun DriverTheoryApp(appContainer: AppContainer) {
         }
 
         else -> {
-            DriverTheoryNavGraph(
-                appContainer = appContainer,
-                hasUserProfile = appState.userProfile != null
-            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                DriverTheoryNavGraph(
+                    appContainer = appContainer,
+                    hasUserProfile = appState.userProfile != null
+                )
+                AchievementUnlockToastHost(
+                    achievementsRepository = appContainer.achievementsRepository,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
+            }
         }
     }
 }
@@ -163,6 +173,7 @@ private fun DriverTheoryNavGraph(
                 uiState = uiState,
                 onOpenStudyModes = { navController.navigate(AppDestinations.STUDY_PICKER) },
                 onResumeSession = { sessionId -> navController.navigate(AppDestinations.sessionRoute(sessionId)) },
+                onOpenAchievements = { navController.navigate(AppDestinations.ACHIEVEMENTS) },
                 onOpenReviewQuestions = { navController.navigate(AppDestinations.REVIEW_PICKER) },
                 onOpenBookmarks = { navController.navigate(AppDestinations.BOOKMARKS) },
                 onOpenProgress = { navController.navigate(AppDestinations.PROGRESS) },
@@ -254,6 +265,21 @@ private fun DriverTheoryNavGraph(
             )
         }
 
+        composable(AppDestinations.ACHIEVEMENTS) {
+            val viewModel: AchievementsViewModel = viewModel(
+                factory = AchievementsViewModel.provideFactory(
+                    achievementsRepository = appContainer.achievementsRepository,
+                    userProfileRepository = appContainer.userProfileRepository
+                )
+            )
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            AchievementsScreen(
+                uiState = uiState,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         composable(
             route = AppDestinations.REVIEW_QUESTIONS_ROUTE,
             arguments = listOf(
@@ -268,7 +294,8 @@ private fun DriverTheoryNavGraph(
                 factory = ReviewQuestionsViewModel.provideFactory(
                     scope = reviewScope,
                     filterId = filterId,
-                    questionBankRepository = appContainer.questionBankRepository
+                    questionBankRepository = appContainer.questionBankRepository,
+                    achievementsRepository = appContainer.achievementsRepository
                 )
             )
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()

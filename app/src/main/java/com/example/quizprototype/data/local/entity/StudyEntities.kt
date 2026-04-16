@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.quizprototype.domain.model.BadgeId
 import com.example.quizprototype.domain.model.LicenceType
 import com.example.quizprototype.domain.model.StudyMode
 
@@ -100,6 +101,12 @@ data class UserProfileEntity(
     @PrimaryKey val id: Int = 1,
     val username: String,
     val createdAtEpochMillis: Long
+)
+
+@Entity(tableName = "achievement_unlocks")
+data class AchievementUnlockEntity(
+    @PrimaryKey val badgeId: BadgeId,
+    val unlockedAtEpochMillis: Long
 )
 
 @Entity(

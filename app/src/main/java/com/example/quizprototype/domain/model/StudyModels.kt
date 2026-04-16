@@ -12,6 +12,19 @@ enum class StudyMode {
     BOOKMARKED
 }
 
+enum class BadgeId {
+    ONBOARDED,
+    STUDENT,
+    FIRST_GEAR,
+    SECOND_GEAR,
+    THIRD_GEAR,
+    FOURTH_GEAR,
+    FIFTH_GEAR,
+    NCT,
+    FOCUSED,
+    COMPLETIONIST
+}
+
 data class UserProfile(
     val id: Int = 1,
     val username: String,
@@ -170,6 +183,14 @@ data class DashboardSummary(
     val weakestCategories: List<WeakCategory>,
     val focusNextCategory: WeakCategory?,
     val strongestCategory: WeakCategory?
+)
+
+data class AchievementBadge(
+    val id: BadgeId,
+    val title: String,
+    val description: String,
+    val unlocked: Boolean,
+    val unlockedAtEpochMillis: Long?
 )
 
 data class ProgressSnapshot(

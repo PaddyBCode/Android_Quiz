@@ -9,6 +9,7 @@ object AppDestinations {
     const val CATEGORY_STUDY = "category_study"
     const val REVIEW_PICKER = "review_picker"
     const val REVIEW_QUESTIONS = "review_questions"
+    const val ACHIEVEMENTS = "achievements"
     const val SESSION = "session"
     const val RESULTS = "results"
     const val PROGRESS = "progress"

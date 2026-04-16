@@ -10,6 +10,8 @@ import com.example.quizprototype.data.local.dao.ContentDao
 import com.example.quizprototype.data.local.dao.QuestionBankDao
 import com.example.quizprototype.data.local.dao.StudySessionDao
 import com.example.quizprototype.data.local.dao.UserProfileDao
+import com.example.quizprototype.data.local.dao.AchievementDao
+import com.example.quizprototype.data.local.entity.AchievementUnlockEntity
 import com.example.quizprototype.data.local.entity.AnswerOptionEntity
 import com.example.quizprototype.data.local.entity.AnswerRecordEntity
 import com.example.quizprototype.data.local.entity.BookmarkEntity
@@ -29,12 +31,13 @@ import com.example.quizprototype.data.local.entity.UserProfileEntity
         AnswerOptionEntity::class,
         ContentVersionEntity::class,
         UserProfileEntity::class,
+        AchievementUnlockEntity::class,
         BookmarkEntity::class,
         StudySessionEntity::class,
         StudySessionQuestionEntity::class,
         AnswerRecordEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 @TypeConverters(AppTypeConverters::class)
@@ -48,6 +51,8 @@ abstract class QuizDatabase : RoomDatabase() {
     abstract fun studySessionDao(): StudySessionDao
 
     abstract fun userProfileDao(): UserProfileDao
+
+    abstract fun achievementDao(): AchievementDao
 
     companion object {
         private const val DATABASE_NAME = "quiz_database"

@@ -23,6 +23,7 @@ class DefaultStudySessionRepository(
     private val questionBankRepository: QuestionBankRepository,
     private val questionBankDao: QuestionBankDao,
     private val bookmarkDao: BookmarkDao,
+    private val achievementsRepository: AchievementsRepository,
     private val analyticsLogger: AnalyticsLogger
 ) : StudySessionRepository {
 
@@ -160,6 +161,7 @@ class DefaultStudySessionRepository(
                 "total" to result.totalQuestions.toString()
             )
         )
+        achievementsRepository.onSessionCompleted(result)
         return result
     }
 

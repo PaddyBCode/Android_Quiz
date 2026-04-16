@@ -5,9 +5,11 @@ import com.example.quizprototype.data.content.BundledQuestionPackParser
 import com.example.quizprototype.data.content.BundledQuestionPackValidator
 import com.example.quizprototype.data.local.QuizDatabase
 import com.example.quizprototype.data.repository.AndroidAnalyticsLogger
+import com.example.quizprototype.data.repository.AchievementsRepository
 import com.example.quizprototype.data.repository.AnalyticsLogger
 import com.example.quizprototype.data.repository.BookmarkRepository
 import com.example.quizprototype.data.repository.ContentImportRepository
+import com.example.quizprototype.data.repository.DefaultAchievementsRepository
 import com.example.quizprototype.data.repository.DefaultBookmarkRepository
 import com.example.quizprototype.data.repository.DefaultContentImportRepository
 import com.example.quizprototype.data.repository.DefaultProgressRepository
@@ -27,6 +29,7 @@ interface AppContainer {
     val studySessionRepository: StudySessionRepository
     val progressRepository: ProgressRepository
     val userProfileRepository: UserProfileRepository
+    val achievementsRepository: AchievementsRepository
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
@@ -68,6 +71,7 @@ class DefaultAppContainer(context: Context) : AppContainer {
         DefaultBookmarkRepository(
             bookmarkDao = quizDatabase.bookmarkDao(),
             questionBankRepository = questionBankRepository,
+            achievementsRepository = achievementsRepository,
             analyticsLogger = analyticsLogger
         )
     }
@@ -78,6 +82,7 @@ class DefaultAppContainer(context: Context) : AppContainer {
             questionBankRepository = questionBankRepository,
             questionBankDao = quizDatabase.questionBankDao(),
             bookmarkDao = quizDatabase.bookmarkDao(),
+            achievementsRepository = achievementsRepository,
             analyticsLogger = analyticsLogger
         )
     }
@@ -96,6 +101,15 @@ class DefaultAppContainer(context: Context) : AppContainer {
             userProfileDao = quizDatabase.userProfileDao(),
             bookmarkDao = quizDatabase.bookmarkDao(),
             studySessionDao = quizDatabase.studySessionDao(),
+            achievementDao = quizDatabase.achievementDao(),
+            achievementsRepository = achievementsRepository,
+            analyticsLogger = analyticsLogger
+        )
+    }
+
+    override val achievementsRepository: AchievementsRepository by lazy {
+        DefaultAchievementsRepository(
+            achievementDao = quizDatabase.achievementDao(),
             analyticsLogger = analyticsLogger
         )
     }

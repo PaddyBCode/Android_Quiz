@@ -31,6 +31,7 @@ fun HomeScreen(
     uiState: HomeUiState,
     onOpenStudyModes: () -> Unit,
     onResumeSession: (Long) -> Unit,
+    onOpenAchievements: () -> Unit,
     onOpenReviewQuestions: () -> Unit,
     onOpenBookmarks: () -> Unit,
     onOpenProgress: () -> Unit,
@@ -160,6 +161,9 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text("Study library", style = MaterialTheme.typography.titleMedium)
+                        OutlinedButton(onClick = onOpenAchievements, modifier = Modifier.fillMaxWidth()) {
+                            Text("Achievements")
+                        }
                         OutlinedButton(onClick = onOpenReviewQuestions, modifier = Modifier.fillMaxWidth()) {
                             Text("Review the Questions")
                         }

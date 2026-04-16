@@ -1,6 +1,8 @@
 package com.example.quizprototype.data.repository
 
 import com.example.quizprototype.domain.model.ActiveStudySession
+import com.example.quizprototype.domain.model.AchievementBadge
+import com.example.quizprototype.domain.model.BadgeId
 import com.example.quizprototype.domain.model.BookmarkedQuestion
 import com.example.quizprototype.domain.model.Category
 import com.example.quizprototype.domain.model.DashboardSummary
@@ -56,6 +58,16 @@ interface StudySessionRepository {
 interface ProgressRepository {
     fun observeDashboardSummary(): Flow<DashboardSummary>
     fun observeProgressSnapshot(): Flow<ProgressSnapshot>
+}
+
+interface AchievementsRepository {
+    fun observeBadges(): Flow<List<AchievementBadge>>
+    fun observeUnlockEvents(): Flow<AchievementBadge>
+    suspend fun unlockBadge(badgeId: BadgeId)
+    suspend fun onProfileCreated()
+    suspend fun onCategoryReviewOpened()
+    suspend fun onSessionCompleted(result: SessionResult)
+    suspend fun onBookmarkCountChanged(bookmarkCount: Int)
 }
 
 interface UserProfileRepository {

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 class DefaultBookmarkRepository(
     private val bookmarkDao: BookmarkDao,
     private val questionBankRepository: QuestionBankRepository,
+    private val achievementsRepository: AchievementsRepository,
     private val analyticsLogger: AnalyticsLogger
 ) : BookmarkRepository {
 
@@ -46,6 +47,7 @@ class DefaultBookmarkRepository(
             )
             analyticsLogger.logEvent("bookmark_added", mapOf("questionId" to questionId))
         }
+        achievementsRepository.onBookmarkCountChanged(bookmarkDao.getBookmarkedQuestionIds().size)
     }
 
     override suspend fun addBookmarks(questionIds: Set<String>): Int {
@@ -61,6 +63,7 @@ class DefaultBookmarkRepository(
             )
             analyticsLogger.logEvent("bookmark_added", mapOf("questionId" to questionId))
         }
+        achievementsRepository.onBookmarkCountChanged(bookmarkDao.getBookmarkedQuestionIds().size)
         return newQuestionIds.size
     }
 }

@@ -3,6 +3,7 @@ package com.example.quizprototype.ui.review
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.quizprototype.data.repository.AchievementsRepository
 import com.example.quizprototype.data.repository.QuestionBankRepository
 import com.example.quizprototype.domain.model.Question
 import com.example.quizprototype.domain.model.QuestionQuery
@@ -26,7 +27,8 @@ data class ReviewQuestionsUiState(
 class ReviewQuestionsViewModel(
     private val scope: ReviewScope,
     private val filterId: String,
-    private val questionBankRepository: QuestionBankRepository
+    private val questionBankRepository: QuestionBankRepository,
+    private val achievementsRepository: AchievementsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ReviewQuestionsUiState())
@@ -78,6 +80,9 @@ class ReviewQuestionsViewModel(
                     title = title,
                     questions = questions
                 )
+                if (scope == ReviewScope.CATEGORY) {
+                    achievementsRepository.onCategoryReviewOpened()
+                }
             }.onFailure { throwable ->
                 _uiState.value = ReviewQuestionsUiState(
                     isLoading = false,
@@ -91,14 +96,16 @@ class ReviewQuestionsViewModel(
         fun provideFactory(
             scope: ReviewScope,
             filterId: String,
-            questionBankRepository: QuestionBankRepository
+            questionBankRepository: QuestionBankRepository,
+            achievementsRepository: AchievementsRepository
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return ReviewQuestionsViewModel(
                         scope = scope,
                         filterId = filterId,
-                        questionBankRepository = questionBankRepository
+                        questionBankRepository = questionBankRepository,
+                        achievementsRepository = achievementsRepository
                     ) as T
                 }
             }

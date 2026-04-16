@@ -1,5 +1,6 @@
 package com.example.quizprototype.data.repository
 
+import com.example.quizprototype.data.local.dao.AchievementDao
 import com.example.quizprototype.data.local.dao.BookmarkDao
 import com.example.quizprototype.data.local.dao.StudySessionDao
 import com.example.quizprototype.data.local.dao.UserProfileDao
@@ -12,6 +13,8 @@ class DefaultUserProfileRepository(
     private val userProfileDao: UserProfileDao,
     private val bookmarkDao: BookmarkDao,
     private val studySessionDao: StudySessionDao,
+    private val achievementDao: AchievementDao,
+    private val achievementsRepository: AchievementsRepository,
     private val analyticsLogger: AnalyticsLogger
 ) : UserProfileRepository {
 
@@ -39,10 +42,12 @@ class DefaultUserProfileRepository(
             "profile_created",
             mapOf("usernameLength" to trimmedUsername.length.toString())
         )
+        achievementsRepository.onProfileCreated()
     }
 
     override suspend fun resetProfile(): String? {
         val previousUsername = userProfileDao.getUserProfile()?.username
+        achievementDao.deleteAllUnlocks()
         bookmarkDao.deleteAllBookmarks()
         studySessionDao.deleteAllSessions()
         userProfileDao.deleteUserProfile()
