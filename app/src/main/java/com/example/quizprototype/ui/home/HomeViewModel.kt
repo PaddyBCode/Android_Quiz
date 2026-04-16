@@ -111,6 +111,28 @@ class HomeViewModel(
         }
     }
 
+    fun startMiniMockSession() {
+        viewModelScope.launch {
+            runCatching {
+                studySessionRepository.startSession(
+                    SessionConfig(
+                        mode = StudyMode.MOCK_EXAM,
+                        title = "Mini Mock",
+                        query = QuestionQuery(examEligibleOnly = true),
+                        questionLimit = 10,
+                        durationLimitSeconds = 15 * 60,
+                        immediateFeedback = false,
+                        allowReviewBeforeSubmit = false
+                    )
+                )
+            }.onSuccess { sessionId ->
+                _events.emit(HomeEvent.OpenSession(sessionId))
+            }.onFailure {
+                transientMessage.value = "Unable to start the mini mock right now."
+            }
+        }
+    }
+
     fun startExamStyleMockSession() {
         viewModelScope.launch {
             runCatching {

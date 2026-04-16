@@ -171,14 +171,14 @@ private fun DriverTheoryNavGraph(
 
             HomeScreen(
                 uiState = uiState,
-                onOpenStudyModes = { navController.navigate(AppDestinations.STUDY_PICKER) },
                 onResumeSession = { sessionId -> navController.navigate(AppDestinations.sessionRoute(sessionId)) },
+                onOpenCategoryStudy = { navController.navigate(AppDestinations.CATEGORY_STUDY) },
                 onOpenAchievements = { navController.navigate(AppDestinations.ACHIEVEMENTS) },
                 onOpenReviewQuestions = { navController.navigate(AppDestinations.REVIEW_PICKER) },
                 onOpenBookmarks = { navController.navigate(AppDestinations.BOOKMARKS) },
-                onOpenProgress = { navController.navigate(AppDestinations.PROGRESS) },
                 onOpenSettings = { navController.navigate(AppDestinations.SETTINGS) },
                 onStartQuickStudy = viewModel::startQuickStudySession,
+                onStartMiniMock = viewModel::startMiniMockSession,
                 onStartExamStyleMock = viewModel::startExamStyleMockSession,
                 onStartWeakQuestions = viewModel::startWeakQuestionsSession,
                 onDismissMessage = viewModel::clearMessage

@@ -29,14 +29,14 @@ import com.example.quizprototype.ui.theme.RoadGreen
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
-    onOpenStudyModes: () -> Unit,
     onResumeSession: (Long) -> Unit,
+    onOpenCategoryStudy: () -> Unit,
     onOpenAchievements: () -> Unit,
     onOpenReviewQuestions: () -> Unit,
     onOpenBookmarks: () -> Unit,
-    onOpenProgress: () -> Unit,
     onOpenSettings: () -> Unit,
     onStartQuickStudy: () -> Unit,
+    onStartMiniMock: () -> Unit,
     onStartExamStyleMock: () -> Unit,
     onStartWeakQuestions: () -> Unit,
     onDismissMessage: () -> Unit
@@ -133,22 +133,42 @@ fun HomeScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text("Study modes", style = MaterialTheme.typography.titleMedium)
-                        Button(onClick = onOpenStudyModes, modifier = Modifier.fillMaxWidth()) {
-                            Text("Open study mode picker")
-                        }
+                        Text("Quiz Selector", style = MaterialTheme.typography.titleMedium)
                         OutlinedButton(onClick = onStartQuickStudy, modifier = Modifier.fillMaxWidth()) {
-                            Text("Quick Study")
+                            Text("Quick Test")
+                        }
+                        OutlinedButton(onClick = onStartMiniMock, modifier = Modifier.fillMaxWidth()) {
+                            Text("Mini Mock")
                         }
                         OutlinedButton(onClick = onStartExamStyleMock, modifier = Modifier.fillMaxWidth()) {
-                            Text("Exam Style Mock")
+                            Text("Exam Mock")
+                        }
+                        Button(onClick = onOpenCategoryStudy, modifier = Modifier.fillMaxWidth()) {
+                            Text("Quiz by Category")
+                        }
+                    }
+                }
+            }
+
+            item {
+                Card {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Text("Study Room", style = MaterialTheme.typography.titleMedium)
+                        OutlinedButton(onClick = onOpenReviewQuestions, modifier = Modifier.fillMaxWidth()) {
+                            Text("Review Questions")
+                        }
+                        OutlinedButton(onClick = onOpenBookmarks, modifier = Modifier.fillMaxWidth()) {
+                            Text("Bookmarked Questions")
                         }
                         OutlinedButton(
                             onClick = onStartWeakQuestions,
                             enabled = (dashboard?.weakQuestionsAvailable ?: 0) > 0,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Review weak questions")
+                            Text("Revise weak questions")
                         }
                     }
                 }
@@ -160,29 +180,10 @@ fun HomeScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text("Study library", style = MaterialTheme.typography.titleMedium)
+                        Text("Profile", style = MaterialTheme.typography.titleMedium)
                         OutlinedButton(onClick = onOpenAchievements, modifier = Modifier.fillMaxWidth()) {
                             Text("Achievements")
                         }
-                        OutlinedButton(onClick = onOpenReviewQuestions, modifier = Modifier.fillMaxWidth()) {
-                            Text("Review the Questions")
-                        }
-                        OutlinedButton(onClick = onOpenBookmarks, modifier = Modifier.fillMaxWidth()) {
-                            Text("Bookmarks")
-                        }
-                        OutlinedButton(onClick = onOpenProgress, modifier = Modifier.fillMaxWidth()) {
-                            Text("Progress")
-                        }
-                    }
-                }
-            }
-
-            item {
-                Card {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
                         OutlinedButton(onClick = onOpenSettings, modifier = Modifier.fillMaxWidth()) {
                             Text("Settings")
                         }
