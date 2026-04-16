@@ -23,6 +23,13 @@ data class SessionUiState(
 ) {
     val isLoading: Boolean
         get() = session == null && errorMessage == null
+
+    val unansweredQuestionNumbers: List<Int>
+        get() = session?.questions
+            ?.mapIndexedNotNull { index, question ->
+                if (question.selectedOptionId == null) index + 1 else null
+            }
+            ?: emptyList()
 }
 
 sealed interface SessionEvent {

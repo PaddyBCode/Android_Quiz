@@ -1,17 +1,23 @@
 package com.example.quizprototype.ui.session
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -20,8 +26,14 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.quizprototype.ui.question.QuestionAssetImage
 import com.example.quizprototype.ui.formatDuration
@@ -67,10 +79,12 @@ fun SessionScreen(
             }
 
             else -> {
+                var showFinishDialog by rememberSaveable { mutableStateOf(false) }
                 val selectedOptionId = currentQuestion.selectedOptionId
                 val correctOptionId = currentQuestion.question.correctOptionId
                 val progress = (session.currentIndex + 1).toFloat() / session.totalQuestions.toFloat()
                 val feedbackVisible = session.immediateFeedback && selectedOptionId != null
+                val unansweredQuestionNumbers = uiState.unansweredQuestionNumbers
 
                 LazyColumn(
                     modifier = Modifier.padding(innerPadding),
@@ -82,16 +96,38 @@ fun SessionScreen(
                             OutlinedButton(onClick = onBack) {
                                 Text("Back")
                             }
-                            Text(session.title, style = MaterialTheme.typography.headlineMedium)
-                            Text(
-                                "Question ${session.currentIndex + 1} of ${session.totalQuestions}",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            uiState.remainingSeconds?.let { seconds ->
-                                Text(
-                                    "Time remaining ${formatDuration(seconds)}",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Text(session.title, style = MaterialTheme.typography.headlineMedium)
+                                    Text(
+                                        "Question ${session.currentIndex + 1} of ${session.totalQuestions}",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                    Text(
+                                        "Answered ${session.totalQuestions - unansweredQuestionNumbers.size} of ${session.totalQuestions}",
+                                        style = MaterialTheme.typography.labelLarge,
+                                        color = if (unansweredQuestionNumbers.isEmpty()) {
+                                            MaterialTheme.colorScheme.primary
+                                        } else {
+                                            MaterialTheme.colorScheme.onSurfaceVariant
+                                        }
+                                    )
+                                }
+                                uiState.remainingSeconds?.let { seconds ->
+                                    session.durationLimitSeconds?.let { limit ->
+                                        CountdownWheel(
+                                            remainingSeconds = seconds,
+                                            durationLimitSeconds = limit
+                                        )
+                                    }
+                                }
                             }
                             LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
                         }
@@ -195,7 +231,7 @@ fun SessionScreen(
                             Button(
                                 onClick = {
                                     if (isLastQuestion) {
-                                        onFinishSession()
+                                        showFinishDialog = true
                                     } else {
                                         onNextQuestion()
                                     }
@@ -203,20 +239,118 @@ fun SessionScreen(
                                 enabled = canAdvance,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(if (isLastQuestion) "Finish session" else "Next question")
+                                Text(if (isLastQuestion) "Submit quiz" else "Next question")
                             }
                             if (!isLastQuestion) {
                                 OutlinedButton(
-                                    onClick = onFinishSession,
+                                    onClick = { showFinishDialog = true },
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Text("End session now")
+                                    Text("Submit quiz")
                                 }
                             }
                         }
                     }
                 }
+
+                if (showFinishDialog) {
+                    FinishSessionDialog(
+                        unansweredQuestionNumbers = unansweredQuestionNumbers,
+                        onDismiss = { showFinishDialog = false },
+                        onConfirm = {
+                            showFinishDialog = false
+                            onFinishSession()
+                        }
+                    )
+                }
             }
         }
     }
+}
+
+@Composable
+private fun CountdownWheel(
+    remainingSeconds: Int,
+    durationLimitSeconds: Int
+) {
+    val progress = if (durationLimitSeconds == 0) {
+        0f
+    } else {
+        remainingSeconds.toFloat() / durationLimitSeconds.toFloat()
+    }.coerceIn(0f, 1f)
+    val indicatorColor = when {
+        progress <= 0.2f -> MaterialTheme.colorScheme.error
+        progress <= 0.4f -> DeepGold
+        else -> MaterialTheme.colorScheme.primary
+    }
+
+    Box(
+        modifier = Modifier.size(88.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            progress = { progress },
+            modifier = Modifier.size(88.dp),
+            color = indicatorColor,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            strokeWidth = 7.dp
+        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                text = formatDuration(remainingSeconds),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "left",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun FinishSessionDialog(
+    unansweredQuestionNumbers: List<Int>,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text("Submit quiz?")
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (unansweredQuestionNumbers.isEmpty()) {
+                    Text("You have answered every question. Do you want to submit your quiz now?")
+                } else {
+                    Text(
+                        text = "You still have ${unansweredQuestionNumbers.size} unanswered ${if (unansweredQuestionNumbers.size == 1) "question" else "questions"}.",
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        "Unanswered: ${unansweredQuestionNumbers.joinToString()}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text("Submitting now will end the session and count those questions as incorrect.")
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text("Submit")
+            }
+        },
+        dismissButton = {
+            OutlinedButton(onClick = onDismiss) {
+                Text("Keep studying")
+            }
+        }
+    )
 }
