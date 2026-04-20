@@ -1,14 +1,11 @@
 package com.example.quizprototype.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -19,9 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.quizprototype.ui.formatPercent
 import com.example.quizprototype.ui.theme.DeepGold
 import com.example.quizprototype.ui.theme.LaneWhite
 import com.example.quizprototype.ui.theme.RoadGreen
@@ -52,10 +47,11 @@ fun HomeScreen(
                 Card(
                     colors = CardDefaults.cardColors(containerColor = RoadGreen)
                 ) {
-                    Box(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp)
+                            .padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(18.dp)
                     ) {
                         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             uiState.userProfile?.let { profile ->
@@ -76,6 +72,47 @@ fun HomeScreen(
                                 color = LaneWhite.copy(alpha = 0.9f)
                             )
                         }
+                        dashboard?.let { summary ->
+                            Card(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = LaneWhite.copy(alpha = 0.08f)
+                                )
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(14.dp),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    Text(
+                                        text = "Your study snapshot",
+                                        style = MaterialTheme.typography.labelLarge,
+                                        color = DeepGold
+                                    )
+                                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                                        SummaryMetric(
+                                            label = "Question bank",
+                                            value = summary.totalQuestions.toString(),
+                                            modifier = Modifier.weight(1f),
+                                            labelColor = LaneWhite.copy(alpha = 0.78f),
+                                            valueColor = LaneWhite
+                                        )
+                                        SummaryMetric(
+                                            label = "Readiness",
+                                            value = "${summary.readinessPercent}%",
+                                            modifier = Modifier.weight(1f),
+                                            labelColor = LaneWhite.copy(alpha = 0.78f),
+                                            valueColor = LaneWhite
+                                        )
+                                        SummaryMetric(
+                                            label = "Sessions",
+                                            value = summary.completedSessions.toString(),
+                                            modifier = Modifier.weight(1f),
+                                            labelColor = LaneWhite.copy(alpha = 0.78f),
+                                            valueColor = LaneWhite
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -94,18 +131,6 @@ fun HomeScreen(
             }
 
             if (dashboard != null) {
-                item {
-                    DashboardCard(
-                        username = dashboard.let { uiState.userProfile?.username },
-                        totalQuestions = dashboard.totalQuestions,
-                        readinessPercent = dashboard.readinessPercent,
-                        focusNext = dashboard.focusNextCategory?.title ?: "Build history",
-                        completedSessions = dashboard.completedSessions,
-                        bookmarkedQuestions = dashboard.bookmarkedQuestions,
-                        strength = dashboard.strongestCategory?.title ?: "Build history"
-                    )
-                }
-
                 dashboard.activeSession?.let { session ->
                     item {
                         Card {
@@ -191,100 +216,6 @@ fun HomeScreen(
                 }
             }
 
-            if (dashboard?.weakestCategories?.isNotEmpty() == true) {
-                item {
-                    Text("Focus next on", style = MaterialTheme.typography.titleMedium)
-                }
-                items(dashboard.weakestCategories) { category ->
-                    Card {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(category.title, style = MaterialTheme.typography.titleMedium)
-                            Text(
-                                "Accuracy ${formatPercent(category.accuracy)} across ${category.attempts} answered questions",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun DashboardCard(
-    username: String?,
-    totalQuestions: Int,
-    readinessPercent: Int,
-    completedSessions: Int,
-    bookmarkedQuestions: Int,
-    focusNext: String,
-    strength: String
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = RoadGreen)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(
-                text = if (username.isNullOrBlank()) "Dashboard" else "Dashboard for $username",
-                style = MaterialTheme.typography.titleMedium,
-                color = LaneWhite
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                SummaryMetric(
-                    label = "Question bank",
-                    value = totalQuestions.toString(),
-                    modifier = Modifier.weight(1f),
-                    labelColor = DeepGold,
-                    valueColor = LaneWhite
-                )
-                SummaryMetric(
-                    label = "Readiness",
-                    value = "$readinessPercent%",
-                    modifier = Modifier.weight(1f),
-                    labelColor = DeepGold,
-                    valueColor = LaneWhite
-                )
-                SummaryMetric(
-                    label = "Sessions",
-                    value = completedSessions.toString(),
-                    modifier = Modifier.weight(1f),
-                    labelColor = DeepGold,
-                    valueColor = LaneWhite
-                )
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                SummaryMetric(
-                    label = "Bookmarks",
-                    value = bookmarkedQuestions.toString(),
-                    modifier = Modifier.weight(1f),
-                    labelColor = DeepGold,
-                    valueColor = LaneWhite
-                )
-                SummaryMetric(
-                    label = "Focus on Next",
-                    value = focusNext,
-                    modifier = Modifier.weight(1f),
-                    labelColor = DeepGold,
-                    valueColor = LaneWhite,
-                    compactValue = true
-                )
-                SummaryMetric(
-                    label = "Strength",
-                    value = strength,
-                    modifier = Modifier.weight(1f),
-                    labelColor = DeepGold,
-                    valueColor = LaneWhite,
-                    compactValue = true
-                )
-            }
         }
     }
 }
@@ -295,8 +226,7 @@ private fun SummaryMetric(
     value: String,
     modifier: Modifier = Modifier,
     labelColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.84f),
-    valueColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
-    compactValue: Boolean = false
+    valueColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface
 ) {
     Column(
         modifier = modifier,
@@ -305,11 +235,8 @@ private fun SummaryMetric(
         Text(label, style = MaterialTheme.typography.labelLarge, color = labelColor)
         Text(
             text = value,
-            style = if (compactValue) MaterialTheme.typography.titleMedium else MaterialTheme.typography.headlineSmall,
-            color = valueColor,
-            maxLines = if (compactValue) 2 else 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = if (compactValue) Modifier.height(48.dp) else Modifier
+            style = MaterialTheme.typography.headlineSmall,
+            color = valueColor
         )
     }
 }
