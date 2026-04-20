@@ -18,9 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.quizprototype.ui.theme.DeepGold
-import com.example.quizprototype.ui.theme.LaneWhite
-import com.example.quizprototype.ui.theme.RoadGreen
 
 @Composable
 fun StudyModePickerScreen(
@@ -42,7 +39,10 @@ fun StudyModePickerScreen(
         ) {
             item {
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = RoadGreen)
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 ) {
                     Box(
                         modifier = Modifier
@@ -56,24 +56,24 @@ fun StudyModePickerScreen(
                             Text(
                                 "Choose your study mode",
                                 style = MaterialTheme.typography.headlineMedium,
-                                color = LaneWhite
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                             Text(
                                 "Pick a study route, focus on one category, or review every question with answers visible.",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = LaneWhite.copy(alpha = 0.9f)
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f)
                             )
                             Text(
                                 "Built for road-sign clarity and quick revision.",
                                 style = MaterialTheme.typography.labelLarge,
-                                color = DeepGold
+                                color = MaterialTheme.colorScheme.secondary
                             )
                         }
                         Text(
                             text = "Study routes",
                             modifier = Modifier.align(Alignment.TopEnd),
                             style = MaterialTheme.typography.labelLarge,
-                            color = DeepGold
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     }
                 }
@@ -159,14 +159,21 @@ private fun StudyModeCard(
     onClick: () -> Unit
 ) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = RoadGreen)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(title, style = MaterialTheme.typography.titleMedium, color = LaneWhite)
-            Text(description, style = MaterialTheme.typography.bodyLarge, color = LaneWhite.copy(alpha = 0.9f))
+            Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(
+                description,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f)
+            )
             Button(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth()) {
                 Text(buttonLabel)
             }

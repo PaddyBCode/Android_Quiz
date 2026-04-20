@@ -20,9 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.quizprototype.domain.model.Category
-import com.example.quizprototype.ui.theme.DeepGold
-import com.example.quizprototype.ui.theme.LaneWhite
-import com.example.quizprototype.ui.theme.RoadGreen
 
 @Composable
 fun CategoryStudyScreen(
@@ -38,7 +35,12 @@ fun CategoryStudyScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Card(colors = CardDefaults.cardColors(containerColor = RoadGreen)) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -51,19 +53,19 @@ fun CategoryStudyScreen(
                             Text(
                                 "Study by Category",
                                 style = MaterialTheme.typography.headlineMedium,
-                                color = LaneWhite
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                             Text(
                                 "Pick one category and work through a focused practice session with explanations.",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = LaneWhite.copy(alpha = 0.9f)
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f)
                             )
                         }
                         Text(
                             text = "Focused practice",
                             modifier = Modifier.align(Alignment.TopEnd),
                             style = MaterialTheme.typography.labelLarge,
-                            color = DeepGold
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     }
                 }
@@ -86,17 +88,30 @@ fun CategoryStudyScreen(
             }
 
             items(uiState.categories, key = { it.id }) { category ->
-                Card(colors = CardDefaults.cardColors(containerColor = RoadGreen)) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        Text(category.title, style = MaterialTheme.typography.titleMedium, color = LaneWhite)
-                        Text(category.description, style = MaterialTheme.typography.bodyMedium, color = LaneWhite.copy(alpha = 0.9f))
+                        Text(
+                            category.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Text(
+                            category.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f)
+                        )
                         Text(
                             "${category.questionCount} questions",
                             style = MaterialTheme.typography.labelLarge,
-                            color = DeepGold
+                            color = MaterialTheme.colorScheme.secondary
                         )
                         Button(
                             onClick = { onStartCategory(category) },

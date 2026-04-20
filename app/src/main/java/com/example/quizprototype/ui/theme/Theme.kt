@@ -1,6 +1,5 @@
 package com.example.quizprototype.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -14,26 +13,46 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = RoadGreenLight,
+    onPrimary = Coal,
+    primaryContainer = RoadGreen,
+    onPrimaryContainer = LaneWhite,
     secondary = DeepGold,
+    onSecondary = Coal,
+    secondaryContainer = SafetyAmber,
+    onSecondaryContainer = LaneWhite,
     tertiary = SignBlue,
+    onTertiary = LaneWhite,
+    tertiaryContainer = Slate,
+    onTertiaryContainer = LaneWhite,
     background = Coal,
     surface = ForestNight,
-    onPrimary = Coal,
-    onSecondary = Coal,
     onBackground = Mist,
-    onSurface = Mist
+    onSurface = Mist,
+    surfaceVariant = Slate,
+    onSurfaceVariant = LaneWhite.copy(alpha = 0.78f),
+    outline = Moss
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = RoadGreen,
+    onPrimary = LaneWhite,
+    primaryContainer = Color(0xFFDDEEE6),
+    onPrimaryContainer = ForestNight,
     secondary = DeepGold,
+    onSecondary = Coal,
+    secondaryContainer = SignalSand,
+    onSecondaryContainer = Coal,
     tertiary = SignBlue,
+    onTertiary = LaneWhite,
+    tertiaryContainer = Color(0xFFDCEBf6),
+    onTertiaryContainer = Coal,
     background = Mist,
     surface = LaneWhite,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
     onBackground = Coal,
-    onSurface = Coal
+    onSurface = Coal,
+    surfaceVariant = Color(0xFFE3ECE7),
+    onSurfaceVariant = Slate,
+    outline = Moss
 )
 
 @Composable

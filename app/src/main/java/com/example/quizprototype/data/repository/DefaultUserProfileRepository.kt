@@ -5,6 +5,8 @@ import com.example.quizprototype.data.local.dao.BookmarkDao
 import com.example.quizprototype.data.local.dao.StudySessionDao
 import com.example.quizprototype.data.local.dao.UserProfileDao
 import com.example.quizprototype.data.local.entity.UserProfileEntity
+import com.example.quizprototype.domain.model.AppThemeMode
+import com.example.quizprototype.domain.model.ProfileAvatarId
 import com.example.quizprototype.domain.model.UserProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -28,21 +30,44 @@ class DefaultUserProfileRepository(
         return userProfileDao.getUserProfile()?.toDomain()
     }
 
-    override suspend fun createProfile(username: String) {
+    override suspend fun createProfile(username: String, avatarId: ProfileAvatarId) {
         val trimmedUsername = username.trim()
         require(trimmedUsername.isNotBlank()) { "Please enter a username." }
         require(trimmedUsername.length >= 2) { "Username must be at least 2 characters." }
         userProfileDao.upsertUserProfile(
             UserProfileEntity(
                 username = trimmedUsername,
-                createdAtEpochMillis = System.currentTimeMillis()
+                createdAtEpochMillis = System.currentTimeMillis(),
+                themeMode = AppThemeMode.DARK,
+                avatarId = avatarId
             )
         )
         analyticsLogger.logEvent(
             "profile_created",
-            mapOf("usernameLength" to trimmedUsername.length.toString())
+            mapOf(
+                "usernameLength" to trimmedUsername.length.toString(),
+                "avatarId" to avatarId.name
+            )
         )
         achievementsRepository.onProfileCreated()
+    }
+
+    override suspend fun updateThemeMode(themeMode: AppThemeMode) {
+        checkNotNull(userProfileDao.getUserProfile()) { "Create a profile before updating the theme." }
+        userProfileDao.updateThemeMode(themeMode)
+        analyticsLogger.logEvent(
+            "theme_mode_updated",
+            mapOf("themeMode" to themeMode.name)
+        )
+    }
+
+    override suspend fun updateProfileAvatar(avatarId: ProfileAvatarId) {
+        checkNotNull(userProfileDao.getUserProfile()) { "Create a profile before updating the profile picture." }
+        userProfileDao.updateAvatarId(avatarId)
+        analyticsLogger.logEvent(
+            "profile_avatar_updated",
+            mapOf("avatarId" to avatarId.name)
+        )
     }
 
     override suspend fun resetProfile(): String? {
@@ -63,6 +88,8 @@ private fun UserProfileEntity.toDomain(): UserProfile {
     return UserProfile(
         id = id,
         username = username,
-        createdAtEpochMillis = createdAtEpochMillis
+        createdAtEpochMillis = createdAtEpochMillis,
+        themeMode = themeMode,
+        avatarId = avatarId
     )
 }

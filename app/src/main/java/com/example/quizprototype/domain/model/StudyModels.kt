@@ -25,10 +25,24 @@ enum class BadgeId {
     COMPLETIONIST
 }
 
+enum class AppThemeMode {
+    DARK,
+    LIGHT
+}
+
+enum class ProfileAvatarId {
+    WOMAN_DOG,
+    WOMAN_CAT,
+    MAN_DOG,
+    MAN_CAT
+}
+
 data class UserProfile(
     val id: Int = 1,
     val username: String,
-    val createdAtEpochMillis: Long
+    val createdAtEpochMillis: Long,
+    val themeMode: AppThemeMode = AppThemeMode.DARK,
+    val avatarId: ProfileAvatarId = ProfileAvatarId.WOMAN_DOG
 )
 
 data class Category(

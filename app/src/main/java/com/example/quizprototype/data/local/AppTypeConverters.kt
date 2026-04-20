@@ -1,8 +1,10 @@
 package com.example.quizprototype.data.local
 
 import androidx.room.TypeConverter
+import com.example.quizprototype.domain.model.AppThemeMode
 import com.example.quizprototype.domain.model.BadgeId
 import com.example.quizprototype.domain.model.LicenceType
+import com.example.quizprototype.domain.model.ProfileAvatarId
 import com.example.quizprototype.domain.model.StudyMode
 
 class AppTypeConverters {
@@ -23,4 +25,16 @@ class AppTypeConverters {
 
     @TypeConverter
     fun toBadgeId(value: String): BadgeId = BadgeId.valueOf(value)
+
+    @TypeConverter
+    fun fromAppThemeMode(value: AppThemeMode): String = value.name
+
+    @TypeConverter
+    fun toAppThemeMode(value: String): AppThemeMode = AppThemeMode.valueOf(value)
+
+    @TypeConverter
+    fun fromProfileAvatarId(value: ProfileAvatarId): String = value.name
+
+    @TypeConverter
+    fun toProfileAvatarId(value: String): ProfileAvatarId = ProfileAvatarId.valueOf(value)
 }

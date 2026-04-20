@@ -4,8 +4,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.quizprototype.domain.model.AppThemeMode
 import com.example.quizprototype.domain.model.BadgeId
 import com.example.quizprototype.domain.model.LicenceType
+import com.example.quizprototype.domain.model.ProfileAvatarId
 import com.example.quizprototype.domain.model.StudyMode
 
 @Entity(tableName = "categories")
@@ -100,7 +102,9 @@ data class ContentVersionEntity(
 data class UserProfileEntity(
     @PrimaryKey val id: Int = 1,
     val username: String,
-    val createdAtEpochMillis: Long
+    val createdAtEpochMillis: Long,
+    val themeMode: AppThemeMode,
+    val avatarId: ProfileAvatarId
 )
 
 @Entity(tableName = "achievement_unlocks")

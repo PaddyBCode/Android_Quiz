@@ -4,14 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.quizprototype.data.repository.UserProfileRepository
+import com.example.quizprototype.domain.model.AppThemeMode
+import com.example.quizprototype.domain.model.ProfileAvatarId
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 data class SettingsUiState(
+    val themeMode: AppThemeMode = AppThemeMode.DARK,
+    val isUpdatingTheme: Boolean = false,
+    val avatarId: ProfileAvatarId = ProfileAvatarId.WOMAN_DOG,
+    val isUpdatingAvatar: Boolean = false,
     val isResetting: Boolean = false,
     val errorMessage: String? = null
 )
@@ -24,30 +32,80 @@ class SettingsViewModel(
     private val userProfileRepository: UserProfileRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SettingsUiState())
-    val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+    private val isUpdatingTheme = MutableStateFlow(false)
+    private val isUpdatingAvatar = MutableStateFlow(false)
+    private val isResetting = MutableStateFlow(false)
+    private val errorMessage = MutableStateFlow<String?>(null)
+
+    val uiState: StateFlow<SettingsUiState> = combine(
+        userProfileRepository.observeUserProfile(),
+        isUpdatingTheme,
+        isUpdatingAvatar,
+        isResetting,
+        errorMessage
+    ) { userProfile, updatingTheme, updatingAvatar, resetting, error ->
+        SettingsUiState(
+            themeMode = userProfile?.themeMode ?: AppThemeMode.DARK,
+            avatarId = userProfile?.avatarId ?: ProfileAvatarId.WOMAN_DOG,
+            isUpdatingTheme = updatingTheme,
+            isUpdatingAvatar = updatingAvatar,
+            isResetting = resetting,
+            errorMessage = error
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = SettingsUiState()
+    )
 
     private val _events = MutableSharedFlow<SettingsEvent>()
     val events = _events.asSharedFlow()
 
     fun clearError() {
-        _uiState.value = _uiState.value.copy(errorMessage = null)
+        errorMessage.value = null
+    }
+
+    fun updateThemeMode(themeMode: AppThemeMode) {
+        if (isUpdatingTheme.value || uiState.value.themeMode == themeMode) return
+        viewModelScope.launch {
+            isUpdatingTheme.value = true
+            errorMessage.value = null
+            runCatching {
+                userProfileRepository.updateThemeMode(themeMode)
+            }.onFailure { throwable ->
+                errorMessage.value = throwable.message ?: "Unable to update the theme."
+            }
+            isUpdatingTheme.value = false
+        }
+    }
+
+    fun updateProfileAvatar(avatarId: ProfileAvatarId) {
+        if (isUpdatingAvatar.value || uiState.value.avatarId == avatarId) return
+        viewModelScope.launch {
+            isUpdatingAvatar.value = true
+            errorMessage.value = null
+            runCatching {
+                userProfileRepository.updateProfileAvatar(avatarId)
+            }.onFailure { throwable ->
+                errorMessage.value = throwable.message ?: "Unable to update the profile picture."
+            }
+            isUpdatingAvatar.value = false
+        }
     }
 
     fun resetProfile() {
-        if (_uiState.value.isResetting) return
+        if (isResetting.value) return
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isResetting = true, errorMessage = null)
+            isResetting.value = true
+            errorMessage.value = null
             runCatching {
                 userProfileRepository.resetProfile()
             }.onSuccess { previousUsername ->
-                _uiState.value = _uiState.value.copy(isResetting = false)
+                isResetting.value = false
                 _events.emit(SettingsEvent.ProfileReset(previousUsername))
             }.onFailure { throwable ->
-                _uiState.value = _uiState.value.copy(
-                    isResetting = false,
-                    errorMessage = throwable.message ?: "Unable to reset profile."
-                )
+                isResetting.value = false
+                errorMessage.value = throwable.message ?: "Unable to reset profile."
             }
         }
     }

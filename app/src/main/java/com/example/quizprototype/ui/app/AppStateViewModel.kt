@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.quizprototype.data.repository.ContentImportRepository
 import com.example.quizprototype.data.repository.UserProfileRepository
+import com.example.quizprototype.domain.model.AppThemeMode
 import com.example.quizprototype.domain.model.UserProfile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 data class AppStateUiState(
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
-    val userProfile: UserProfile? = null
+    val userProfile: UserProfile? = null,
+    val themeMode: AppThemeMode = AppThemeMode.DARK
 )
 
 class AppStateViewModel(
@@ -49,7 +51,8 @@ class AppStateViewModel(
                 if (_uiState.value.errorMessage == null) {
                     _uiState.value = _uiState.value.copy(
                         isLoading = !(contentReady && profileResolved),
-                        userProfile = profile
+                        userProfile = profile,
+                        themeMode = profile?.themeMode ?: AppThemeMode.DARK
                     )
                 }
             }

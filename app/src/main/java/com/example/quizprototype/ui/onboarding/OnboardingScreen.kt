@@ -35,6 +35,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.verticalScroll
+import com.example.quizprototype.domain.model.ProfileAvatarId
+import com.example.quizprototype.ui.profile.ProfileAvatarPicker
 import com.example.quizprototype.ui.theme.LaneWhite
 import com.example.quizprototype.ui.theme.RoadGreen
 import com.example.quizprototype.ui.theme.TricolourOrange
@@ -42,6 +44,7 @@ import com.example.quizprototype.ui.theme.TricolourOrange
 @Composable
 fun OnboardingScreen(
     uiState: OnboardingUiState,
+    onAvatarSelected: (ProfileAvatarId) -> Unit,
     onUsernameChanged: (String) -> Unit,
     onCreateProfile: () -> Unit
 ) {
@@ -82,8 +85,15 @@ fun OnboardingScreen(
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "Choose the username you want to see on the dashboard and progress pages.",
+                        text = "Choose a profile picture and the username you want to see on the dashboard and progress pages.",
                         style = MaterialTheme.typography.bodyMedium
+                    )
+                    ProfileAvatarPicker(
+                        selectedAvatarId = uiState.avatarId,
+                        enabled = !uiState.isSaving,
+                        onAvatarSelected = onAvatarSelected,
+                        showLabels = false,
+                        modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedTextField(
                         value = uiState.username,

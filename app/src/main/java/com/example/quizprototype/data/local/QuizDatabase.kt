@@ -37,7 +37,7 @@ import com.example.quizprototype.data.local.entity.UserProfileEntity
         StudySessionQuestionEntity::class,
         AnswerRecordEntity::class
     ],
-    version = 4,
+    version = 6,
     exportSchema = true
 )
 @TypeConverters(AppTypeConverters::class)

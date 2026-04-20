@@ -2,10 +2,12 @@ package com.example.quizprototype.data.repository
 
 import com.example.quizprototype.domain.model.ActiveStudySession
 import com.example.quizprototype.domain.model.AchievementBadge
+import com.example.quizprototype.domain.model.AppThemeMode
 import com.example.quizprototype.domain.model.BadgeId
 import com.example.quizprototype.domain.model.BookmarkedQuestion
 import com.example.quizprototype.domain.model.Category
 import com.example.quizprototype.domain.model.DashboardSummary
+import com.example.quizprototype.domain.model.ProfileAvatarId
 import com.example.quizprototype.domain.model.ProgressSnapshot
 import com.example.quizprototype.domain.model.Question
 import com.example.quizprototype.domain.model.QuestionQuery
@@ -73,6 +75,8 @@ interface AchievementsRepository {
 interface UserProfileRepository {
     fun observeUserProfile(): Flow<UserProfile?>
     suspend fun getUserProfile(): UserProfile?
-    suspend fun createProfile(username: String)
+    suspend fun createProfile(username: String, avatarId: ProfileAvatarId)
+    suspend fun updateThemeMode(themeMode: AppThemeMode)
+    suspend fun updateProfileAvatar(avatarId: ProfileAvatarId)
     suspend fun resetProfile(): String?
 }

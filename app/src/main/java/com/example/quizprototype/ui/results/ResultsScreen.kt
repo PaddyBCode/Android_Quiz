@@ -28,9 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.quizprototype.ui.formatDuration
 import com.example.quizprototype.ui.formatPercent
-import com.example.quizprototype.ui.theme.DeepGold
-import com.example.quizprototype.ui.theme.LaneWhite
-import com.example.quizprototype.ui.theme.RoadGreen
 
 @Composable
 fun ResultsScreen(
@@ -75,7 +72,10 @@ fun ResultsScreen(
                 ) {
                     item {
                         Card(
-                            colors = CardDefaults.cardColors(containerColor = RoadGreen)
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
                         ) {
                             Column(
                                 modifier = Modifier.padding(16.dp),
@@ -85,7 +85,7 @@ fun ResultsScreen(
                                 Text(
                                     if (result.passed) "Pass" else "Fail",
                                     style = MaterialTheme.typography.headlineSmall,
-                                    color = if (result.passed) DeepGold else MaterialTheme.colorScheme.error,
+                                    color = if (result.passed) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error,
                                     fontWeight = FontWeight.Bold
                                 )
                                 FuelGaugeScore(scorePercent = scorePercent)
@@ -184,6 +184,9 @@ fun ResultsScreen(
 @Composable
 private fun FuelGaugeScore(scorePercent: Int) {
     val clampedPercent = scorePercent.coerceIn(0, 100)
+    val trackColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.18f)
+    val fillColor = MaterialTheme.colorScheme.secondary
+    val markerColor = MaterialTheme.colorScheme.onPrimaryContainer
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Canvas(
             modifier = Modifier
@@ -196,13 +199,13 @@ private fun FuelGaugeScore(scorePercent: Int) {
             val indicatorX = (gaugeWidth * clampedPercent.toFloat() / 100f).coerceIn(0f, gaugeWidth)
 
             drawRoundRect(
-                color = Color(0x33FFFFFF),
+                color = trackColor,
                 topLeft = Offset(0f, gaugeTop),
                 size = Size(gaugeWidth, gaugeHeight),
                 cornerRadius = CornerRadius(16f, 16f)
             )
             drawRoundRect(
-                color = DeepGold,
+                color = fillColor,
                 topLeft = Offset(0f, gaugeTop),
                 size = Size((gaugeWidth * clampedPercent.toFloat() / 100f).coerceAtLeast(0f), gaugeHeight),
                 cornerRadius = CornerRadius(16f, 16f)
@@ -211,7 +214,7 @@ private fun FuelGaugeScore(scorePercent: Int) {
             listOf(25, 50, 75, 100).forEach { marker ->
                 val markerX = gaugeWidth * marker.toFloat() / 100f
                 drawLine(
-                    color = if (marker == 75) Color(0xFF3CCB78) else LaneWhite,
+                    color = if (marker == 75) Color(0xFF3CCB78) else markerColor,
                     start = Offset(markerX, gaugeTop - 8f),
                     end = Offset(markerX, gaugeTop + gaugeHeight + 8f),
                     strokeWidth = if (marker == 75) 6f else 4f,
@@ -220,7 +223,7 @@ private fun FuelGaugeScore(scorePercent: Int) {
             }
 
             drawLine(
-                color = LaneWhite,
+                color = markerColor,
                 start = Offset(indicatorX, gaugeTop - 18f),
                 end = Offset(indicatorX, gaugeTop + gaugeHeight + 18f),
                 strokeWidth = 8f,

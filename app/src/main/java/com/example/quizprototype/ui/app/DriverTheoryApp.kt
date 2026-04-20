@@ -57,6 +57,8 @@ import com.example.quizprototype.ui.study_room.CategoryStudyViewModel
 import com.example.quizprototype.ui.study_room.StudyModePickerEvent
 import com.example.quizprototype.ui.study_room.StudyModePickerScreen
 import com.example.quizprototype.ui.study_room.StudyModePickerViewModel
+import com.example.quizprototype.ui.theme.QuizPrototypeTheme
+import com.example.quizprototype.domain.model.AppThemeMode
 
 @Composable
 fun DriverTheoryApp(appContainer: AppContainer) {
@@ -68,33 +70,37 @@ fun DriverTheoryApp(appContainer: AppContainer) {
     )
     val appState by appStateViewModel.uiState.collectAsStateWithLifecycle()
 
-    when {
-        appState.isLoading -> {
-            FullScreenMessage(
-                title = "Preparing study content",
-                body = "Importing the bundled question pack and loading your study data."
-            ) {
-                CircularProgressIndicator()
+    QuizPrototypeTheme(
+        darkTheme = appState.themeMode == AppThemeMode.DARK
+    ) {
+        when {
+            appState.isLoading -> {
+                FullScreenMessage(
+                    title = "Preparing study content",
+                    body = "Importing the bundled question pack and loading your study data."
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-        }
 
-        appState.errorMessage != null -> {
-            FullScreenMessage(
-                title = "App setup failed",
-                body = appState.errorMessage
-            )
-        }
+            appState.errorMessage != null -> {
+                FullScreenMessage(
+                    title = "App setup failed",
+                    body = appState.errorMessage
+                )
+            }
 
-        else -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                DriverTheoryNavGraph(
-                    appContainer = appContainer,
-                    hasUserProfile = appState.userProfile != null
-                )
-                AchievementUnlockToastHost(
-                    achievementsRepository = appContainer.achievementsRepository,
-                    modifier = Modifier.align(Alignment.TopCenter)
-                )
+            else -> {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    DriverTheoryNavGraph(
+                        appContainer = appContainer,
+                        hasUserProfile = appState.userProfile != null
+                    )
+                    AchievementUnlockToastHost(
+                        achievementsRepository = appContainer.achievementsRepository,
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    )
+                }
             }
         }
     }
@@ -145,6 +151,7 @@ private fun DriverTheoryNavGraph(
 
             OnboardingScreen(
                 uiState = uiState,
+                onAvatarSelected = viewModel::onAvatarSelected,
                 onUsernameChanged = viewModel::onUsernameChanged,
                 onCreateProfile = viewModel::createProfile
             )
@@ -433,6 +440,8 @@ private fun DriverTheoryNavGraph(
 
             SettingsScreen(
                 uiState = uiState,
+                onThemeModeSelected = viewModel::updateThemeMode,
+                onProfileAvatarSelected = viewModel::updateProfileAvatar,
                 onConfirmReset = viewModel::resetProfile,
                 onDismissError = viewModel::clearError,
                 onBack = { navController.popBackStack() }

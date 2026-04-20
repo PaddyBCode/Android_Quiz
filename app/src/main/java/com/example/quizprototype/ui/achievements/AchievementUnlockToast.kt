@@ -26,9 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.quizprototype.data.repository.AchievementsRepository
 import com.example.quizprototype.domain.model.AchievementBadge
-import com.example.quizprototype.ui.theme.DeepGold
-import com.example.quizprototype.ui.theme.LaneWhite
-import com.example.quizprototype.ui.theme.RoadGreen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -70,7 +67,10 @@ fun AchievementUnlockToastHost(
 @Composable
 private fun AchievementUnlockToast(badge: AchievementBadge) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = RoadGreen)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
@@ -88,17 +88,17 @@ private fun AchievementUnlockToast(badge: AchievementBadge) {
                 Text(
                     text = "Achievement unlocked",
                     style = MaterialTheme.typography.labelLarge,
-                    color = DeepGold
+                    color = MaterialTheme.colorScheme.secondary
                 )
                 Text(
                     text = badge.title,
                     style = MaterialTheme.typography.titleMedium,
-                    color = LaneWhite
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
                     text = badge.description,
                     style = MaterialTheme.typography.bodySmall,
-                    color = LaneWhite.copy(alpha = 0.9f)
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f)
                 )
             }
         }

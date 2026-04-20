@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.quizprototype.data.repository.UserProfileRepository
+import com.example.quizprototype.domain.model.ProfileAvatarId
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 
 data class OnboardingUiState(
     val username: String = "",
+    val avatarId: ProfileAvatarId = ProfileAvatarId.WOMAN_DOG,
     val isSaving: Boolean = false,
     val errorMessage: String? = null
 )
@@ -29,6 +31,7 @@ class OnboardingViewModel(
 ) : ViewModel() {
 
     private val username = MutableStateFlow(initialUsername)
+    private val avatarId = MutableStateFlow(ProfileAvatarId.WOMAN_DOG)
     private val isSaving = MutableStateFlow(false)
     private val errorMessage = MutableStateFlow<String?>(null)
     private val _events = MutableSharedFlow<OnboardingEvent>()
@@ -36,11 +39,13 @@ class OnboardingViewModel(
 
     val uiState: StateFlow<OnboardingUiState> = combine(
         username,
+        avatarId,
         isSaving,
         errorMessage
-    ) { currentUsername, saving, error ->
+    ) { currentUsername, currentAvatarId, saving, error ->
         OnboardingUiState(
             username = currentUsername,
+            avatarId = currentAvatarId,
             isSaving = saving,
             errorMessage = error
         )
@@ -55,11 +60,19 @@ class OnboardingViewModel(
         errorMessage.value = null
     }
 
+    fun onAvatarSelected(value: ProfileAvatarId) {
+        avatarId.value = value
+        errorMessage.value = null
+    }
+
     fun createProfile() {
         viewModelScope.launch {
             isSaving.value = true
             runCatching {
-                userProfileRepository.createProfile(username.value)
+                userProfileRepository.createProfile(
+                    username = username.value,
+                    avatarId = avatarId.value
+                )
             }.onSuccess {
                 _events.emit(OnboardingEvent.ProfileCreated)
             }.onFailure { throwable ->
