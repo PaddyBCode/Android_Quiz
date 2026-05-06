@@ -164,7 +164,8 @@ private fun DriverTheoryNavGraph(
     ) {
         NavHost(
             navController = navController,
-            startDestination = if (hasUserProfile) AppDestinations.HOME else AppDestinations.onboardingRoute()
+            startDestination = if (hasUserProfile) AppDestinations.HOME else AppDestinations.onboardingRoute(),
+            modifier = Modifier.padding(bottom = if (showBottomBar) BottomNavHeight else 0.dp)
         ) {
         composable(
             route = AppDestinations.ONBOARDING_ROUTE,
@@ -526,6 +527,8 @@ private enum class BottomNavIcon {
     USER
 }
 
+private val BottomNavHeight = 58.dp
+
 private fun NavHostController.navigateToBottomDestination(route: String) {
     navigate(route) {
         popUpTo(AppDestinations.HOME) {
@@ -553,7 +556,7 @@ private fun QuizBottomNavigationBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .navigationBarsPadding()
-                .height(58.dp)
+                .height(BottomNavHeight)
                 .padding(horizontal = 10.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
